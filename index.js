@@ -2,8 +2,8 @@ var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
   total: 15, // TOTAL NUMBER OF MINES
-  height: 10, // NUMBER OF ROWS
-  width: 10, // NUMBER OF COLUMNS
+  height: 15, // NUMBER OF ROWS
+  width: 15, // NUMBER OF COLUMNS
   lives: 3, // NUMBER OF LIVES PLAYER HAS
   // (A2) GAME FLAGS
   board: [], // CURRENT GAME BOARD
