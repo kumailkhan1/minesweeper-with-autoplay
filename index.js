@@ -535,15 +535,17 @@ var mine = {
       let diff = NUMBER - FLAGS;
       console.log("NUMBER", NUMBER);
       console.log("DIFFERENCE (num - flags)", diff);
-      let ratio = NUMBER / UNOPENED
-      console.log("Ratio of number to unopened", ratio);
-  
+      // let ratio = NUMBER / UNOPENED
+      // console.log("Ratio of number to unopened", ratio);
+      console.log("AdjacentCells", adjacentCells);
       if (diff == UNOPENED) {
         adjacentCells.forEach((el) => {
-          let itemRow = parseInt(el.c.dataset.row),
-            itemColumn = parseInt(el.c.dataset.col);
-          if (el.m) {
-            mine.markComp(itemRow, itemColumn);
+          if (el != undefined) {
+            let itemRow = parseInt(el.c.dataset.row),
+              itemColumn = parseInt(el.c.dataset.col);
+            if (el.m) {
+              mine.markComp(itemRow, itemColumn);
+            }
           }
 
         })
