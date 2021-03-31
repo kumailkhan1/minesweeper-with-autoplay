@@ -248,15 +248,16 @@ var mine = {
         mine.reset();
       }
 
-      mine.computerTurnRound.forEach(elem => {
 
-        if (mine.ongoingRound == elem) {
-          mine.autoplay();
-        }
-      });
 
 
     }
+    mine.computerTurnRound.forEach(elem => {
+
+      if (mine.ongoingRound == elem) {
+        mine.autoplay();
+      }
+    });
   },
 
   // (D) LEFT CLICK TO OPEN CELL
