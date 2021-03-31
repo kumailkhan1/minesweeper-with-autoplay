@@ -242,7 +242,7 @@ var mine = {
           mine.rCell = mine.rCell - 1;
         }
       }
-      console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total); 1
+      console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total); 
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       if (mine.rCell == mine.total) {
         won = true;
@@ -264,9 +264,9 @@ var mine = {
 
   // (D) LEFT CLICK TO OPEN CELL
   openComp: function (row, col) {
+    
     // (D1) GET COORDS OF SELECTED CELL
     let cell = document.getElementById('mine-' + row + '-' + col);
-    console.log("Fron opencomp", row, col);
     // (D2) SELECTED CELL HAS MINE = LOSE
     if (!mine.board[row][col].x && mine.board[row][col].m) {
       if (cell.classList.contains('boom')) {
@@ -347,7 +347,7 @@ var mine = {
       }
 
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
-      console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total);
+      console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total)
       if (mine.rCell == mine.total) {
 
         won = true;
@@ -362,8 +362,7 @@ var mine = {
   },
 
   autoplay: function () {
-    // let randomIndex = Math.floor((Math.random() * mine.typesOfTurns.length));
-    // let randomItem = mine.typesOfTurns[randomIndex];
+    mine.ongoingRound++;
     var modal = document.getElementById("myModal");
 
     var span = document.getElementsByClassName("close")[0];
@@ -390,13 +389,13 @@ var mine = {
 
 
         }
+        
         else {
-          setInterval(() => modal.style.display = "none", 4000)
-
+          
           mine.bombsFoundByComp = 2;
           return;
         }
-
+        setInterval(() => modal.style.display = "none", 4000)
       }
 
     }
