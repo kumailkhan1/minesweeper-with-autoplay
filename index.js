@@ -120,11 +120,7 @@ var mine = {
     // (C1) GET COORDS OF SELECTED CELL
     let row = this.dataset.row,
       col = this.dataset.col;
-    if (mine.board[row][col].r || mine.board[row][col].x || mine.board[row][col].m) { }
-    else {
-      mine.ongoingRound++;
-    }
-
+    mine.ongoingRound++;
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
     if (!mine.board[row][col].r) {
@@ -159,7 +155,6 @@ var mine = {
     if (!mine.board[row][col].x && mine.board[row][col].m) {
       this.classList.add("boom");
       mine.lives--;
-      mine.ongoingRound++;
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       document.getElementById('lives').textContent = mine.lives;
       // Check if player lost all three lives
