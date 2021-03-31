@@ -283,7 +283,6 @@ var mine = {
     if (!mine.board[row][col].r) {
       mine.numFlagged++;
       document.getElementById('flaggedCells').textContent = mine.numFlagged;
-
       cell.classList.add("mark");
       mine.board[row][col].x = !mine.board[row][col].x;
 
