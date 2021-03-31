@@ -13,6 +13,7 @@ var mine = {
   computerTurnRound: [3, 6, 9], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 2, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
+  numFlagged: 0,
   toReveal: [], // ALL CELLS TO REVEAL
   toCheck: [], // ALL CELLS TO CHECK
   checked: [], // ALL CELL THAT HAVE ALREADY BEEN CHECKED
@@ -20,6 +21,7 @@ var mine = {
   reset: function () {
     // (B1) RESET GAME FLAGS
     mine.board = [];
+    mine.numFlagged = 0;
     mine.rCell = mine.height * mine.width;
     mine.lives = 3;
     mine.bombsFoundByComp = 2;
@@ -29,6 +31,8 @@ var mine = {
     mine.checked = [];
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     document.getElementById('lives').textContent = mine.lives;
+    document.getElementById('flaggedCells').textContent = mine.numFlagged;
+    document.getElementById('totalMines').textContent = mine.total;
     // (B2) GET + RESET HTML WRAPPER
     let wrap = document.getElementById("mine-wrap"),
       cssWidth = 100 / mine.width;
@@ -125,13 +129,24 @@ var mine = {
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
     if (!mine.board[row][col].r) {
+      // if it is already marked and it contains mine 
+      if (mine.board[row][col].m && mine.board[row][col].x) {
+
+        mine.numFlagged--;
+
+      }
+      // if it is unmarked
+      else if(mine.board[row][col].m && !mine.board[row][col].x){
+        mine.numFlagged++;
+
+      }
+      document.getElementById('flaggedCells').textContent = mine.numFlagged;
       this.classList.toggle("mark");
-
-
       mine.board[row][col].x = !mine.board[row][col].x;
     }
+
     mine.computerTurnRound.forEach(elem => {
-      if (mine.ongoingRound == elem) {
+      if (mine.numFlagged == elem) {
         mine.autoplay();
       }
     })
@@ -256,7 +271,7 @@ var mine = {
     }
     mine.computerTurnRound.forEach(elem => {
 
-      if (mine.ongoingRound == elem) {
+      if (mine.numFlagged == elem) {
         mine.autoplay();
       }
     });
