@@ -10,7 +10,7 @@ var mine = {
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
   // typesOfTurns: ['open', 'mark'],
-  computerTurnRound: [3, 6], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
+  computerTurnRound: [3, 6, 9], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 2, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
   toReveal: [], // ALL CELLS TO REVEAL
@@ -242,7 +242,7 @@ var mine = {
           mine.rCell = mine.rCell - 1;
         }
       }
-      console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total); 
+      console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total);
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       if (mine.rCell == mine.total) {
         won = true;
@@ -261,20 +261,31 @@ var mine = {
       }
     });
   },
+  markComp: function (row, col) {
+    // (C1) GET COORDS OF SELECTED CELL
+    let cell = document.getElementById('mine-' + row + '-' + col);
+    // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
+    if (!mine.board[row][col].r && mine.board[row][col].m) {
+      setTimeout(() => { cell.classList.add("mark"); }, 1500)
+      mine.board[row][col].x = !mine.board[row][col].x;
 
+    }
+    // (C3) PREVENT CONTEXT MENU FROM OPENING
+
+  },
   // (D) LEFT CLICK TO OPEN CELL
   openComp: function (row, col) {
-    
+
     // (D1) GET COORDS OF SELECTED CELL
     let cell = document.getElementById('mine-' + row + '-' + col);
     // (D2) SELECTED CELL HAS MINE = LOSE
-    if (!mine.board[row][col].x && mine.board[row][col].m) {
+    if (mine.board[row][col].m) {
       if (cell.classList.contains('boom')) {
-        mine.bombsFoundByComp += 1;
+        // mine.bombsFoundByComp += 1;
       }
-      cell.classList.add("mark");
-      mine.board[row][col].x = !mine.board[row][col].x;
-      mine.bombsFoundByComp -= 1;
+      // setTimeout(() => { cell.classList.add("mark"); }, 1000)
+      // mine.board[row][col].x = !mine.board[row][col].x;
+      // mine.bombsFoundByComp -= 1;
     }
     // (D3) REVEAL SELECTED CELL + ALL EMPTY ADJACENT CELLS
     else {
@@ -338,9 +349,16 @@ var mine = {
           let thisCol = parseInt(cell1[1]);
           mine.board[thisRow][thisCol].r = true;
           if (mine.board[thisRow][thisCol].a != 0) {
-            mine.board[thisRow][thisCol].c.innerHTML = mine.board[thisRow][thisCol].a;
+
+
+            setTimeout(() => {
+              mine.board[thisRow][thisCol].c.innerHTML = mine.board[thisRow][thisCol].a;
+              mine.board[thisRow][thisCol].c.classList.add("reveal");
+            }, 1000);
+
+
+
           }
-          mine.board[thisRow][thisCol].c.classList.add("reveal");
 
           mine.rCell = mine.rCell - 1;
         }
@@ -362,46 +380,190 @@ var mine = {
   },
 
   autoplay: function () {
-    mine.ongoingRound++;
-    var modal = document.getElementById("myModal");
+    // mine.ongoingRound++;
+    // var modal = document.getElementById("myModal");
 
-    var span = document.getElementsByClassName("close")[0];
+    // var span = document.getElementsByClassName("close")[0];
 
-
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-      modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-    modal.style.display = "block";
-    for (let row = 0; row < mine.height; row++) {
-      for (let col = 0; col < mine.width; col++) {
-        if (mine.bombsFoundByComp != 0) {
-
-          mine.openComp(row, col)
-
-
-        }
-        
-        else {
-          
-          mine.bombsFoundByComp = 2;
-          return;
-        }
-        setInterval(() => modal.style.display = "none", 4000)
-      }
-
-    }
+    // span.onclick = function () {
+    //   modal.style.display = "none";
     // }
-  }
+    // window.onclick = function (event) {
+    //   if (event.target == modal) {
+    //     modal.style.display = "none";
+    //   }
+    // }
+    // modal.style.display = "block";
+    // for (let row = 0; row < mine.height; row++) {
+    //   for (let col = 0; col < mine.width; col++) {
+    //     if (mine.bombsFoundByComp != 0) {
 
+    //       mine.openComp(row, col)
+
+    //     }
+
+    //     else {
+
+    //       mine.bombsFoundByComp = 2;
+    //       return;
+    //     }
+    //     setInterval(() => modal.style.display = "none", 4000)
+    //   }
+
+    // }
+    // Get all revealed cells
+    let cells = document.getElementsByClassName('reveal');
+    cells = Array.from(cells).filter((el) => {
+      if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3' || el.textContent == '4') {
+        return el;
+      }
+    })
+    console.log(cells);
+    let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
+    cells.forEach((el) => {
+      ROW = parseInt(el.dataset.row);
+      COL = parseInt(el.dataset.col);
+      NUMBER = mine.board[ROW][COL].a;
+      adjacentCells = [];
+      selectedCell = mine.board[ROW][COL];
+
+      // Look around in adjacent cells for Flags and unopened
+      FLAGS = 0;
+      UNOPENED = 0;
+      let lastRow = ROW - 1,
+        nextRow = ROW + 1;
+      if (nextRow == mine.height) { nextRow = -1; }
+
+
+      // LOOP THROUGH CELLS OF EACH ROW
+
+      let lastCol = COL - 1,
+        nextCol = COL + 1;
+      if (nextCol == mine.width) { nextCol = -1; }
+
+      // CALCULATE ONLY IF CELL DOES NOT CONTAIN MINE
+
+      // COUNTING FLAGS IN LAST ROW
+      if (lastRow != -1) {
+        if (lastCol != -1) {
+          adjacentCells.push(mine.board[lastRow][lastCol])
+          adjacentCells.push(mine.board[ROW][COL])
+          adjacentCells.push(mine.board[lastRow][nextCol])
+          // console.log(mine.board[lastRow][lastCol]);
+          // console.log(mine.board[ROW][COL]);
+          // console.log(mine.board[lastRow][nextCol]);
+          if (mine.board[lastRow][lastCol].x) {
+            FLAGS++;
+          }
+          else if (!mine.board[lastRow][lastCol].r) {
+            UNOPENED++;
+          }
+
+        }
+        if (mine.board[ROW][COL].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[ROW][COL].r) {
+          UNOPENED++;
+        }
+        if (nextCol != -1) {
+          if (mine.board[lastRow][nextCol].x) {
+
+            FLAGS++;
+          }
+          else if (!mine.board[lastRow][nextCol].r) {
+            UNOPENED++;
+          }
+        }
+      }
+
+      // CURRENT ROW
+      if (lastCol != -1) {
+        adjacentCells.push(mine.board[ROW][lastCol])
+        adjacentCells.push(mine.board[ROW][nextCol])
+        // console.log(mine.board[ROW][lastCol]);
+        // console.log(mine.board[ROW][nextCol]);
+        if (mine.board[ROW][lastCol].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[ROW][lastCol].r) {
+          UNOPENED++;
+        }
+      }
+      if (nextCol != -1) {
+        if (mine.board[ROW][nextCol].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[ROW][nextCol].r) {
+          UNOPENED++;
+        }
+      }
+
+      // ADD NUMBER OF MINES IN NEXT ROW
+      if (nextRow != -1) {
+        if (lastCol != -1) {
+          adjacentCells.push(mine.board[nextRow][lastCol])
+          adjacentCells.push(mine.board[nextRow][COL])
+          adjacentCells.push(mine.board[nextRow][nextCol])
+          console.log(mine.board[nextRow][lastCol]);
+          // console.log(mine.board[nextRow][COL]);
+          // console.log(mine.board[nextRow][nextCol]);
+          if (mine.board[nextRow][lastCol].x) {
+            FLAGS++;
+          }
+          else if (!mine.board[nextRow][lastCol].r) {
+            UNOPENED++;
+          }
+        }
+        if (mine.board[nextRow][COL].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[nextRow][COL].r) {
+          UNOPENED++;
+        }
+        if (nextCol != -1) {
+          if (mine.board[nextRow][nextCol].x) {
+            FLAGS++;
+          }
+          else if (!mine.board[nextRow][nextCol].r) {
+            UNOPENED++;
+          }
+        }
+      }
+
+      console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
+    })
+    let diff = NUMBER - FLAGS;
+    console.log("NUMBER",NUMBER);
+    console.log("DIFFERENCE (num - flags)", diff);
+    if (diff != UNOPENED) {
+
+
+      for (let i = 1; i <= 3; i++) {
+        let randomItem = undefined;
+        while (randomItem == undefined) {
+          randomItem = mine.generateItem(adjacentCells)
+        }
+        console.log("ROW", randomItem);
+        let itemRow = parseInt(randomItem.c.dataset.row),
+          itemColumn = parseInt(randomItem.c.dataset.col);
+        mine.markComp(itemRow, itemColumn);
+      }
+
+
+    }
+
+
+  },
+  // computerPlaceFlags: function (ROW, COL) {
+
+  //   return { FLAGS, UNOPENED };
+  // }
+  generateItem: function (arr) {
+
+    let randomItem = arr[Math.floor(Math.random() * arr.length)];
+    return randomItem;
+  }
 };
 
 
