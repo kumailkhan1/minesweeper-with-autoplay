@@ -423,7 +423,7 @@ var mine = {
     cells.forEach((el) => {
       ROW = parseInt(el.dataset.row);
       COL = parseInt(el.dataset.col);
-      NUMBER = mine.board[ROW][COL].a;
+      NUMBER = parseInt(mine.board[ROW][COL].a);
       adjacentCells = [];
       selectedCell = mine.board[ROW][COL];
 
@@ -505,7 +505,7 @@ var mine = {
           adjacentCells.push(mine.board[nextRow][lastCol])
           adjacentCells.push(mine.board[nextRow][COL])
           adjacentCells.push(mine.board[nextRow][nextCol])
-          console.log(mine.board[nextRow][lastCol]);
+          // console.log(mine.board[nextRow][lastCol]);
           // console.log(mine.board[nextRow][COL]);
           // console.log(mine.board[nextRow][nextCol]);
           if (mine.board[nextRow][lastCol].x) {
@@ -532,26 +532,25 @@ var mine = {
       }
 
       console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
-    })
-    let diff = NUMBER - FLAGS;
-    console.log("NUMBER",NUMBER);
-    console.log("DIFFERENCE (num - flags)", diff);
-    if (diff != UNOPENED) {
+      let diff = NUMBER - FLAGS;
+      console.log("NUMBER", NUMBER);
+      console.log("DIFFERENCE (num - flags)", diff);
+      let ratio = NUMBER / UNOPENED
+      console.log("Ratio of number to unopened", ratio);
+  
+      if (diff == UNOPENED) {
+        adjacentCells.forEach((el) => {
+          let itemRow = parseInt(el.c.dataset.row),
+            itemColumn = parseInt(el.c.dataset.col);
+          if (el.m) {
+            mine.markComp(itemRow, itemColumn);
+          }
 
+        })
 
-      for (let i = 1; i <= 3; i++) {
-        let randomItem = undefined;
-        while (randomItem == undefined) {
-          randomItem = mine.generateItem(adjacentCells)
-        }
-        console.log("ROW", randomItem);
-        let itemRow = parseInt(randomItem.c.dataset.row),
-          itemColumn = parseInt(randomItem.c.dataset.col);
-        mine.markComp(itemRow, itemColumn);
       }
+    })
 
-
-    }
 
 
   },
