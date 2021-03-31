@@ -1,9 +1,10 @@
+var won = false;
 var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
   total: 15, // TOTAL NUMBER OF MINES
-  height: 15, // NUMBER OF ROWS
-  width: 15, // NUMBER OF COLUMNS
+  height: 10, // NUMBER OF ROWS
+  width: 10, // NUMBER OF COLUMNS
   lives: 3, // NUMBER OF LIVES PLAYER HAS
   // (A2) GAME FLAGS
   board: [], // CURRENT GAME BOARD
@@ -70,7 +71,7 @@ var mine = {
       if (!mine.board[row][col].m) {
         mine.board[row][col].m = true;
         // CHEAT - SHOW MINE ON THE BOARD
-        // mine.board[row][col].c.innerHTML = "*";
+        mine.board[row][col].c.innerHTML = "*";
         mToLay--;
       }
     }
@@ -244,6 +245,7 @@ var mine = {
       console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total); 1
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       if (mine.rCell == mine.total) {
+        won = true;
         alert("YOU WIN!");
         mine.reset();
       }
@@ -347,6 +349,8 @@ var mine = {
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total);
       if (mine.rCell == mine.total) {
+
+        won = true;
         alert("YOU WIN!");
         mine.reset();
         return;
