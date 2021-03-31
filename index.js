@@ -136,7 +136,7 @@ var mine = {
 
       }
       // if it is unmarked
-      else if(mine.board[row][col].m && !mine.board[row][col].x){
+      else if (mine.board[row][col].m && !mine.board[row][col].x) {
         mine.numFlagged++;
 
       }
@@ -280,8 +280,11 @@ var mine = {
     // (C1) GET COORDS OF SELECTED CELL
     let cell = document.getElementById('mine-' + row + '-' + col);
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
-    if (!mine.board[row][col].r && mine.board[row][col].m) {
-      setTimeout(() => { cell.classList.add("mark"); }, 1500)
+    if (!mine.board[row][col].r) {
+      mine.numFlagged++;
+      document.getElementById('flaggedCells').textContent = mine.numFlagged;
+
+      cell.classList.add("mark");
       mine.board[row][col].x = !mine.board[row][col].x;
 
     }
@@ -364,17 +367,11 @@ var mine = {
           let thisCol = parseInt(cell1[1]);
           mine.board[thisRow][thisCol].r = true;
           if (mine.board[thisRow][thisCol].a != 0) {
-
-
-            setTimeout(() => {
-              mine.board[thisRow][thisCol].c.innerHTML = mine.board[thisRow][thisCol].a;
-              mine.board[thisRow][thisCol].c.classList.add("reveal");
-            }, 1000);
-
-
+            mine.sleep(1000)
+            mine.board[thisRow][thisCol].c.innerHTML = mine.board[thisRow][thisCol].a;
 
           }
-
+          mine.board[thisRow][thisCol].c.classList.add("reveal");
           mine.rCell = mine.rCell - 1;
         }
       }
@@ -579,7 +576,15 @@ var mine = {
 
     let randomItem = arr[Math.floor(Math.random() * arr.length)];
     return randomItem;
+  },
+  sleep: function (milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
   }
+
 };
 
 
