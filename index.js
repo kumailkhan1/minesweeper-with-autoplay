@@ -147,7 +147,7 @@ var mine = {
     let row = this.dataset.row,
       col = this.dataset.col;
 
-    if (mine.board[row][col].r || mine.board[row][col].x || mine.board[row][col].m) { }
+    if (mine.board[row][col].r || mine.board[row][col].x) { }
     else {
       mine.ongoingRound++;
     }
