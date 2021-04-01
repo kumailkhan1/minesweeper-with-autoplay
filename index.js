@@ -2,6 +2,7 @@ var won = false;
 var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
+  time: 10000,
   changesByComp: [],
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
@@ -11,7 +12,7 @@ var mine = {
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
   // typesOfTurns: ['open', 'mark'],
-  computerTurnRound: [5], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
+  computerTurnRound: [3], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 4, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
   numFlagged: 0,
@@ -35,6 +36,7 @@ var mine = {
     document.getElementById('lives').textContent = mine.lives;
     document.getElementById('flaggedCells').textContent = mine.numFlagged;
     document.getElementById('totalMines').textContent = mine.total;
+
     // (B2) GET + RESET HTML WRAPPER
     let wrap = document.getElementById("mine-wrap"),
       cssWidth = 100 / mine.width;
@@ -290,7 +292,7 @@ var mine = {
   markComp: function (row, col) {
     let time = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
     let myPromise;
-    myPromise = new Promise((resolve) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         if (mine.bombsFoundByComp == 0) {
           return;
@@ -317,15 +319,12 @@ var mine = {
               // mine.changesByComp.push(cell);
               cell.classList.toggle("mark");
               mine.board[row][col].x = !mine.board[row][col].x;
-              
-
-
 
             }
           }
         }
-        resolve();
-      }, 10000)
+        resolve('ok');
+      }, mine.time)
     });
     return myPromise;
 
@@ -431,7 +430,7 @@ var mine = {
     }
   },
 
-  autoplay: function () {
+  autoplay: async function () {
     mine.disableClicks();
     // mine.callModal("Now, your helper will play for a few rounds.",2000);
     // mine.callModal("Now, you are in control again",10000);
@@ -583,8 +582,17 @@ var mine = {
       }
 
     });
-    console.log(mine.changesByComp);
-    Promise.some(mine.changesByComp,4).then(() => { mine.enableClicks() });
+    console.log(mine.bombsFoundByComp);
+
+    for (let i = 1; i <= mine.bombsFoundByComp; i++) {
+      $("#modal-text").text(i+" flag(s) found");
+      $("#myModal").css("display", "block");
+      await mine.sleep(mine.time / mine.bombsFoundByComp)
+      $("#myModal").hide()
+    }
+
+
+    Promise.some(mine.changesByComp, 4).then(() => { mine.enableClicks() });
   },
   generateItem: function (arr) {
 
@@ -613,6 +621,10 @@ var mine = {
       }
     }
   },
+  sleep: function (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
+
 
 };
 
