@@ -2,6 +2,7 @@ var won = false;
 var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
+  changesByComp: [],
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
   width: 10, // NUMBER OF COLUMNS
@@ -10,7 +11,7 @@ var mine = {
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
   // typesOfTurns: ['open', 'mark'],
-  computerTurnRound: [3, 6, 9], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
+  computerTurnRound: [3, 8, 12], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 4, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
   numFlagged: 0,
@@ -267,7 +268,7 @@ var mine = {
           mine.rCell = mine.rCell - 1;
         }
       }
-      console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total);
+      // console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total);
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       if (mine.rCell == mine.total) {
         won = true;
@@ -288,39 +289,46 @@ var mine = {
   },
   markComp: function (row, col) {
     let time = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+    let myPromise;
+    myPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        if (mine.bombsFoundByComp == 0) {
+          return;
+        }
+        let cell = document.getElementById('mine-' + row + '-' + col);
+        // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
+        if (cell.classList.contains('boom')) {
+          //  do nothing
 
-    setTimeout(function () {
-      if (mine.bombsFoundByComp == 0) {
-        return;
-      }
-      let cell = document.getElementById('mine-' + row + '-' + col);
-      // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
-      if (cell.classList.contains('boom')) {
-        //  do nothing
+        }
+        else {
+          if (!mine.board[row][col].r) {
+            // if it is already marked and it contains mine 
+            if (mine.board[row][col].m && mine.board[row][col].x) {
+              // DO NOTHING AS IT IS ALREADY MARKED BY USER
 
-      }
-      else {
-        if (!mine.board[row][col].r) {
-          // if it is already marked and it contains mine 
-          if (mine.board[row][col].m && mine.board[row][col].x) {
-            // DO NOTHING AS IT IS ALREADY MARKED BY USER
+            }
+            // if it has mine but unmarked
+            else if (mine.board[row][col].m && !mine.board[row][col].x) {
 
-          }
-          // if it has mine but unmarked
-          else if (mine.board[row][col].m && !mine.board[row][col].x) {
-            mine.bombsFoundByComp--;
-            mine.numFlagged++;
-            document.getElementById('flaggedCells').textContent = mine.numFlagged;
-            cell.classList.toggle("mark");
-            mine.board[row][col].x = !mine.board[row][col].x;
+              mine.bombsFoundByComp--;
+              mine.numFlagged++;
+              document.getElementById('flaggedCells').textContent = mine.numFlagged;
+              // mine.changesByComp.push(cell);
+              cell.classList.toggle("mark");
+              mine.board[row][col].x = !mine.board[row][col].x;
+              
 
 
 
+            }
           }
         }
-      }
+        resolve();
+      }, 10000)
+    });
+    return myPromise;
 
-    }, 1000)
     // (C1) GET COORDS OF SELECTED CELL
   },
   // (D) LEFT CLICK TO OPEN CELL
@@ -424,6 +432,7 @@ var mine = {
   },
 
   autoplay: function () {
+    mine.disableClicks();
     // mine.callModal("Now, your helper will play for a few rounds.",2000);
     // mine.callModal("Now, you are in control again",10000);
     let cells = document.getElementsByClassName('reveal');
@@ -439,8 +448,9 @@ var mine = {
     $("#myModal").css("display", "block");
     setTimeout(() => { $("#myModal").hide() }, 1000);
 
+    let cellIndex = 0;
     console.log("first modal", $("#modal-text").text());
-    cells.forEach((el) => {
+    cells.forEach((el, idx) => {
       ROW = parseInt(el.dataset.row);
       COL = parseInt(el.dataset.col);
       NUMBER = parseInt(mine.board[ROW][COL].a);
@@ -564,7 +574,7 @@ var mine = {
           if (el != undefined && (mine.bombsFoundByComp != 0)) {
             let itemRow = parseInt(el.c.dataset.row),
               itemColumn = parseInt(el.c.dataset.col);
-            mine.markComp(itemRow, itemColumn);
+            mine.changesByComp.push(mine.markComp(itemRow, itemColumn));
 
           }
 
@@ -573,13 +583,35 @@ var mine = {
       }
 
     });
-
-
+    console.log(mine.changesByComp);
+    Promise.some(mine.changesByComp,4).then(() => { mine.enableClicks() });
   },
   generateItem: function (arr) {
 
     let randomItem = arr[Math.floor(Math.random() * arr.length)];
     return randomItem;
+  },
+
+  disableClicks: function () {
+    for (let row = 0; row < mine.height; row++) {
+      for (let col = 0; col < mine.width; col++) {
+        let cell = mine.board[row][col].c;
+        cell.removeEventListener("click", mine.open);
+        cell.removeEventListener("contextmenu", mine.mark);
+      }
+    }
+  },
+  enableClicks: function () {
+    $("#modal-text").text("Now, you are in control again");
+    $("#myModal").css("display", "block");
+    setTimeout(() => { $("#myModal").hide() }, 1000);
+    for (let row = 0; row < mine.height; row++) {
+      for (let col = 0; col < mine.width; col++) {
+        let cell = mine.board[row][col].c;
+        cell.addEventListener("click", mine.open);
+        cell.addEventListener("contextmenu", mine.mark);
+      }
+    }
   },
 
 };
