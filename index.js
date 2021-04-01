@@ -446,7 +446,7 @@ var mine = {
 
     $("#modal-text").text("Now, your helper will play for a few rounds.");
     $("#myModal").css("display", "block");
-    setTimeout(() => { $("#myModal").hide() }, 1000);
+    setTimeout(() => { $("#myModal").hide() }, 3000);
 
     let cellIndex = 0;
     console.log("first modal", $("#modal-text").text());
@@ -604,7 +604,7 @@ var mine = {
   enableClicks: function () {
     $("#modal-text").text("Now, you are in control again");
     $("#myModal").css("display", "block");
-    setTimeout(() => { $("#myModal").hide() }, 1000);
+    setTimeout(() => { $("#myModal").hide() }, 3000);
     for (let row = 0; row < mine.height; row++) {
       for (let col = 0; col < mine.width; col++) {
         let cell = mine.board[row][col].c;
