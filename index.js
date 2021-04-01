@@ -128,22 +128,34 @@ var mine = {
     mine.ongoingRound++;
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
-    if (!mine.board[row][col].r) {
-      // if it is already marked and it contains mine 
-      if (mine.board[row][col].m && mine.board[row][col].x) {
 
-        mine.numFlagged--;
-
-      }
-      // if it is unmarked
-      else if (mine.board[row][col].m && !mine.board[row][col].x) {
-        mine.numFlagged++;
-
-      }
+    // If user clicked on it before OR it contains mine and marked as well, then dont update numFlagged and don't allow unmarking
+    if (this.classList.contains('boom') || (mine.board[row][col].m && mine.board[row][col].x)) {
       document.getElementById('flaggedCells').textContent = mine.numFlagged;
-      this.classList.toggle("mark");
-      mine.board[row][col].x = !mine.board[row][col].x;
+      //Do nothing
+
     }
+
+
+    else if (!mine.board[row][col].r) {
+      // if it is NOT already marked and it contains mine 
+      if (!mine.board[row][col].x) {
+        this.classList.toggle("mark");
+        mine.board[row][col].x = !mine.board[row][col].x;
+        if (mine.board[row][col].m) {
+          mine.numFlagged++;
+          document.getElementById('flaggedCells').textContent = mine.numFlagged;
+        }
+      }
+      else {
+        this.classList.toggle("mark");
+        mine.board[row][col].x = !mine.board[row][col].x;
+      }
+
+    }
+
+
+
 
     mine.computerTurnRound.forEach(elem => {
       if (mine.numFlagged == elem) {
@@ -280,15 +292,27 @@ var mine = {
     // (C1) GET COORDS OF SELECTED CELL
     let cell = document.getElementById('mine-' + row + '-' + col);
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
-    if (!mine.board[row][col].r) {
-      mine.numFlagged++;
-      document.getElementById('flaggedCells').textContent = mine.numFlagged;
-      cell.classList.add("mark");
-      mine.board[row][col].x = !mine.board[row][col].x;
+    if (cell.classList.contains('boom')) {
+      //  do nothing
 
     }
-    // (C3) PREVENT CONTEXT MENU FROM OPENING
+    else {
+      if (!mine.board[row][col].r) {
+        // if it is already marked and it contains mine 
+        if (mine.board[row][col].m && mine.board[row][col].x) {
+          // DO NOTHING AS IT IS ALREADY MARKED BY USER
 
+        }
+        // if it has mine but unmarked
+        else if (mine.board[row][col].m && !mine.board[row][col].x) {
+          mine.numFlagged++;
+          document.getElementById('flaggedCells').textContent = mine.numFlagged;
+          cell.classList.toggle("mark");
+          mine.board[row][col].x = !mine.board[row][col].x;
+
+        }
+      }
+    }
   },
   // (D) LEFT CLICK TO OPEN CELL
   openComp: function (row, col) {
@@ -554,9 +578,9 @@ var mine = {
           if (el != undefined) {
             let itemRow = parseInt(el.c.dataset.row),
               itemColumn = parseInt(el.c.dataset.col);
-            if (el.m) {
-              mine.markComp(itemRow, itemColumn);
-            }
+
+            mine.markComp(itemRow, itemColumn);
+
           }
 
         })
