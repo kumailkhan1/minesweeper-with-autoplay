@@ -289,8 +289,10 @@ var mine = {
   markComp: function (row, col) {
     let time = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
 
-    let timeoutID = setTimeout(function () {
-     
+    setTimeout(function () {
+      if (mine.bombsFoundByComp == 0) {
+        return;
+      }
       let cell = document.getElementById('mine-' + row + '-' + col);
       // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
       if (cell.classList.contains('boom')) {
@@ -320,7 +322,6 @@ var mine = {
 
     }, 1000)
     // (C1) GET COORDS OF SELECTED CELL
-return timeoutID;
   },
   // (D) LEFT CLICK TO OPEN CELL
   openComp: function (row, col) {
@@ -560,7 +561,7 @@ return timeoutID;
       // console.log("AdjacentCells", adjacentCells);
       if (diff == UNOPENED) {
         adjacentCells.forEach((el) => {
-          if (el != undefined && mine.bombsFoundByComp != 0) {
+          if (el != undefined && (mine.bombsFoundByComp != 0)) {
             let itemRow = parseInt(el.c.dataset.row),
               itemColumn = parseInt(el.c.dataset.col);
             mine.markComp(itemRow, itemColumn);
@@ -570,7 +571,7 @@ return timeoutID;
         })
 
       }
-      
+
     });
 
 
