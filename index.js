@@ -11,7 +11,7 @@ var mine = {
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
   // typesOfTurns: ['open', 'mark'],
-  computerTurnRound: [3, 8, 12], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
+  computerTurnRound: [5], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 4, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
   numFlagged: 0,
