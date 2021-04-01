@@ -4,6 +4,7 @@
     <title>
       Simple Javascript Minesweeper
     </title>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <link rel="stylesheet" type="text/css" href="mine.css">
     <script src="index.js"></script>
   </head>
@@ -13,10 +14,11 @@
       <!-- Modal content -->
       <div class="modal-content">
         <span class="close">&times;</span>
-        <p>Another player is helping you! Please wait. </p>
+        <p id="modal-text"></p>
       </div>
     
     </div>
+
     <p>Lives: <span id="lives"></span></p>
     <p>Moves: <span id="ongoingTurn"></span></p>
     <p>Mines Flagged: <span id="flaggedCells"></span> out of <span id="totalMines"></span></p>

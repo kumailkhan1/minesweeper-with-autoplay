@@ -11,9 +11,10 @@ var mine = {
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
   // typesOfTurns: ['open', 'mark'],
   computerTurnRound: [3, 6, 9], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
-  bombsFoundByComp: 2, //TOTAL bombs that can be found by COMPUTER in a turn
+  bombsFoundByComp: 4, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
   numFlagged: 0,
+  control: false,
   toReveal: [], // ALL CELLS TO REVEAL
   toCheck: [], // ALL CELLS TO CHECK
   checked: [], // ALL CELL THAT HAVE ALREADY BEEN CHECKED
@@ -24,7 +25,7 @@ var mine = {
     mine.numFlagged = 0;
     mine.rCell = mine.height * mine.width;
     mine.lives = 3;
-    mine.bombsFoundByComp = 2;
+    mine.bombsFoundByComp = 4;
     mine.ongoingRound = 0;
     mine.toReveal = [];
     mine.toCheck = [];
@@ -153,9 +154,6 @@ var mine = {
       }
 
     }
-
-
-
 
     mine.computerTurnRound.forEach(elem => {
       if (mine.numFlagged == elem) {
@@ -289,30 +287,40 @@ var mine = {
     });
   },
   markComp: function (row, col) {
-    // (C1) GET COORDS OF SELECTED CELL
-    let cell = document.getElementById('mine-' + row + '-' + col);
-    // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
-    if (cell.classList.contains('boom')) {
-      //  do nothing
+    let time = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
 
-    }
-    else {
-      if (!mine.board[row][col].r) {
-        // if it is already marked and it contains mine 
-        if (mine.board[row][col].m && mine.board[row][col].x) {
-          // DO NOTHING AS IT IS ALREADY MARKED BY USER
+    let timeoutID = setTimeout(function () {
+     
+      let cell = document.getElementById('mine-' + row + '-' + col);
+      // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
+      if (cell.classList.contains('boom')) {
+        //  do nothing
 
-        }
-        // if it has mine but unmarked
-        else if (mine.board[row][col].m && !mine.board[row][col].x) {
-          mine.numFlagged++;
-          document.getElementById('flaggedCells').textContent = mine.numFlagged;
-          cell.classList.toggle("mark");
-          mine.board[row][col].x = !mine.board[row][col].x;
+      }
+      else {
+        if (!mine.board[row][col].r) {
+          // if it is already marked and it contains mine 
+          if (mine.board[row][col].m && mine.board[row][col].x) {
+            // DO NOTHING AS IT IS ALREADY MARKED BY USER
 
+          }
+          // if it has mine but unmarked
+          else if (mine.board[row][col].m && !mine.board[row][col].x) {
+            mine.bombsFoundByComp--;
+            mine.numFlagged++;
+            document.getElementById('flaggedCells').textContent = mine.numFlagged;
+            cell.classList.toggle("mark");
+            mine.board[row][col].x = !mine.board[row][col].x;
+
+
+
+          }
         }
       }
-    }
+
+    }, 1000)
+    // (C1) GET COORDS OF SELECTED CELL
+return timeoutID;
   },
   // (D) LEFT CLICK TO OPEN CELL
   openComp: function (row, col) {
@@ -390,7 +398,7 @@ var mine = {
           let thisCol = parseInt(cell1[1]);
           mine.board[thisRow][thisCol].r = true;
           if (mine.board[thisRow][thisCol].a != 0) {
-            mine.sleep(1000)
+
             mine.board[thisRow][thisCol].c.innerHTML = mine.board[thisRow][thisCol].a;
 
           }
@@ -415,46 +423,22 @@ var mine = {
   },
 
   autoplay: function () {
-    // mine.ongoingRound++;
-    // var modal = document.getElementById("myModal");
-
-    // var span = document.getElementsByClassName("close")[0];
-
-    // span.onclick = function () {
-    //   modal.style.display = "none";
-    // }
-    // window.onclick = function (event) {
-    //   if (event.target == modal) {
-    //     modal.style.display = "none";
-    //   }
-    // }
-    // modal.style.display = "block";
-    // for (let row = 0; row < mine.height; row++) {
-    //   for (let col = 0; col < mine.width; col++) {
-    //     if (mine.bombsFoundByComp != 0) {
-
-    //       mine.openComp(row, col)
-
-    //     }
-
-    //     else {
-
-    //       mine.bombsFoundByComp = 2;
-    //       return;
-    //     }
-    //     setInterval(() => modal.style.display = "none", 4000)
-    //   }
-
-    // }
-    // Get all revealed cells
+    // mine.callModal("Now, your helper will play for a few rounds.",2000);
+    // mine.callModal("Now, you are in control again",10000);
     let cells = document.getElementsByClassName('reveal');
     cells = Array.from(cells).filter((el) => {
       if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3' || el.textContent == '4') {
         return el;
       }
     })
-    console.log(cells);
+    // console.log(cells);
     let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
+
+    $("#modal-text").text("Now, your helper will play for a few rounds.");
+    $("#myModal").css("display", "block");
+    setTimeout(() => { $("#myModal").hide() }, 1000);
+
+    console.log("first modal", $("#modal-text").text());
     cells.forEach((el) => {
       ROW = parseInt(el.dataset.row);
       COL = parseInt(el.dataset.col);
@@ -565,20 +549,20 @@ var mine = {
           }
         }
       }
-
-      console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
+      // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
       let diff = NUMBER - FLAGS;
-      console.log("NUMBER", NUMBER);
-      console.log("DIFFERENCE (num - flags)", diff);
-      // let ratio = NUMBER / UNOPENED
-      // console.log("Ratio of number to unopened", ratio);
-      console.log("AdjacentCells", adjacentCells);
+
+      let count = 0;
+      // console.log("NUMBER", NUMBER);
+      // console.log("DIFFERENCE (num - flags)", diff);
+      // // let ratio = NUMBER / UNOPENED
+      // // console.log("Ratio of number to unopened", ratio);
+      // console.log("AdjacentCells", adjacentCells);
       if (diff == UNOPENED) {
         adjacentCells.forEach((el) => {
-          if (el != undefined) {
+          if (el != undefined && mine.bombsFoundByComp != 0) {
             let itemRow = parseInt(el.c.dataset.row),
               itemColumn = parseInt(el.c.dataset.col);
-
             mine.markComp(itemRow, itemColumn);
 
           }
@@ -586,27 +570,16 @@ var mine = {
         })
 
       }
-    })
-
+      
+    });
 
 
   },
-  // computerPlaceFlags: function (ROW, COL) {
-
-  //   return { FLAGS, UNOPENED };
-  // }
   generateItem: function (arr) {
 
     let randomItem = arr[Math.floor(Math.random() * arr.length)];
     return randomItem;
   },
-  sleep: function (milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  }
 
 };
 
