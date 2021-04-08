@@ -16,7 +16,8 @@ var mine = {
   computerTurnRound: [3], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 0, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
-  numFlagged: 0,
+  numFlaggedCorrectly: 0,
+  numFlaggedInorrectly: 0,
   control: false,
   toReveal: [], // ALL CELLS TO REVEAL
   toCheck: [], // ALL CELLS TO CHECK
@@ -25,7 +26,7 @@ var mine = {
   reset: function () {
     // (B1) RESET GAME FLAGS
     mine.board = [];
-    mine.numFlagged = 0;
+    mine.numFlaggedCorrectly = 0;
     mine.rCell = mine.height * mine.width;
     mine.lives = 3;
     mine.bombsFoundByComp = 0;
@@ -35,7 +36,7 @@ var mine = {
     mine.checked = [];
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     document.getElementById('lives').textContent = mine.lives;
-    document.getElementById('flaggedCells').textContent = mine.numFlagged;
+    document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly;
     document.getElementById('totalMines').textContent = mine.total;
     document.getElementById('status').textContent = "You are playing.";
 
@@ -135,9 +136,9 @@ var mine = {
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
 
-    // If user clicked on it before OR it contains mine and marked as well, then dont update numFlagged and don't allow unmarking
+    // If user clicked on it before OR it contains mine and marked as well, then dont update numFlaggedCorrectly and don't allow unmarking
     if (this.classList.contains('boom') || (mine.board[row][col].m && mine.board[row][col].x)) {
-      document.getElementById('flaggedCells').textContent = mine.numFlagged;
+      document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
       //Do nothing
 
     }
@@ -149,8 +150,8 @@ var mine = {
         this.classList.toggle("mark");
         mine.board[row][col].x = !mine.board[row][col].x;
         if (mine.board[row][col].m) {
-          mine.numFlagged++;
-          document.getElementById('flaggedCells').textContent = mine.numFlagged;
+          mine.numFlaggedCorrectly++;
+          document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
         }
         else {
           mine.lives--;
@@ -173,7 +174,7 @@ var mine = {
       }, 1);
     }
     mine.computerTurnRound.forEach(elem => {
-      if (mine.numFlagged == elem) {
+      if (mine.numFlaggedCorrectly == elem) {
         mine.autoplay();
       }
     })
@@ -197,12 +198,15 @@ var mine = {
       // user clicks on already marked bomb, do nothing
 
     }
-  
+
 
     else if (!mine.board[row][col].x && mine.board[row][col].m) {
       mine.ongoingRound++;
+
       this.classList.add("boom");
       mine.displayModal("This was a mine! You lost one life!")
+      mine.numFlaggedInorrectly++;
+      document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
       mine.lives--;
       mine.board[row][col].x = !mine.board[row][col].x;
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
@@ -307,7 +311,7 @@ var mine = {
     }
     mine.computerTurnRound.forEach(elem => {
 
-      if (mine.numFlagged == elem) {
+      if (mine.numFlaggedCorrectly == elem) {
         mine.autoplay();
       }
     });
@@ -335,7 +339,7 @@ var mine = {
         else if (mine.board[row][col].m && !mine.board[row][col].x) {
 
           mine.bombsFoundByComp++;
-          mine.numFlagged++;
+          mine.numFlaggedCorrectly++;
 
           // mine.changesByComp.push(cell);
           // cell.classList.toggle("mark");
@@ -643,7 +647,7 @@ var mine = {
         console.log("return from markComp", result);
         if (result != undefined && cell != undefined) {
           await mine.sleep(mine.time);
-          document.getElementById('flaggedCells').textContent = mine.numFlagged;
+          document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;;
           cell.classList.toggle("mark");
           $("#modal-text").text(mine.bombsFoundByComp + " flag(s) found");
           $("#myModal").css("display", "block");
