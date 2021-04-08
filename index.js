@@ -153,6 +153,8 @@ var mine = {
         }
         else {
           mine.lives--;
+          mine.board[row][col].r = !mine.board[row][col].r;
+          mine.rCell--;
           document.getElementById('lives').textContent = mine.lives;
           mine.displayModal("There was no mine there. You lost one life.");
         }
