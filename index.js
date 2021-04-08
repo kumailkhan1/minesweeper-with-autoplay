@@ -3,7 +3,7 @@ var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
   result: [],
-  time: 10000,
+  time: 3000,
   totalFlagsFound: 0,
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
@@ -642,9 +642,7 @@ var mine = {
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
         // mine.changesByComp.push(mine.markComp(itemRow, itemColumn));
         const [result, cell] = mine.markComp(itemRow, itemColumn);
-        console.log(cell);
         // await mine.sleep(mine.time);
-        console.log("return from markComp", result);
         if (result != undefined && cell != undefined) {
           await mine.sleep(mine.time);
           document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;;
