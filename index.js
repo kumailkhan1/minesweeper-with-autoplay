@@ -302,7 +302,7 @@ var mine = {
       if (mine.rCell == mine.total) {
         won = true;
         alert("Congratulations! All mines have been identified. Click next to continue.");
-        document.getElementById('status').textContent = "You won!";
+        document.getElementById('status').textContent = "You Won!";
         // mine.reset();
         mine.disableClicks();
       }
