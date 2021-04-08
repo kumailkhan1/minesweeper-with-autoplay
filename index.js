@@ -192,6 +192,7 @@ var mine = {
       if (mine.lives == 0) {
         setTimeout(function () {
           alert("Oops. You lost.");
+          mine.disableClicks();
           // mine.reset();
         }, 1);
       }
@@ -278,6 +279,7 @@ var mine = {
         won = true;
         alert("YOU WIN!");
         // mine.reset();
+        mine.disableClicks();
       }
 
 
