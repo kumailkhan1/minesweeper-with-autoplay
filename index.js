@@ -476,8 +476,8 @@ var mine = {
       let cells = mine.getAllCells();
       await mine.checkAdjacentForOpening(cells);
       // Run the flag routine again
-      let cells = mine.getAllCells();
-      await mine.checkAdjacentForFlags();
+      cells = mine.getAllCells();
+      await mine.checkAdjacentForFlags(cells);
     }
     document.getElementById('status').textContent = "You are playing.";
     document.getElementById('status').classList.remove("slide-fwd-center");
