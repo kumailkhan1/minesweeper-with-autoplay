@@ -432,6 +432,7 @@ var mine = {
 
   autoplay: async function () {
     mine.disableClicks();
+    mine.computerTurnRound.pop();
     // mine.callModal("Now, your helper will play for a few rounds.",2000);
     // mine.callModal("Now, you are in control again",10000);
     let cells = document.getElementsByClassName('reveal');
