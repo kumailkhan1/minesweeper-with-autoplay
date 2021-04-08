@@ -11,7 +11,7 @@ var mine = {
 
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
-  computerTurnRound: [1], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
+  computerTurnRound: [3], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 0, // intermediary variable used to update the mines count
   totalBombsToIdentify: 3, // TOTAL BOMBS THAT CAN BE FOUND By THE COMPUTER
   ongoingRound: 0,
