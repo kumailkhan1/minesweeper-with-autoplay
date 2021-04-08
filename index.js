@@ -463,7 +463,7 @@ var mine = {
     mine.displayModal("Now, your helper will play for a few rounds.");
     // Check for adjacent Cells and place Flags routine
     document.getElementById('status').textContent = "You are being helped.";
-    document.getElementById('status').classList.add("slide-fwd-center");
+
     if (cells.length != 0) {
       await mine.checkAdjacentForFlags(cells);
     }
@@ -478,11 +478,12 @@ var mine = {
       let flaggedCells = mine.getAllMarkedCells();
       await mine.checkAdjacentForOpening(flaggedCells);
       // Run the flag routine again
+      console.log("STARTING FLAG ROUTINE NOW , ", mine.bombsFoundByComp);
       let markedCells = mine.getAllRevealedCells();
       await mine.checkAdjacentForFlags(markedCells);
     }
     document.getElementById('status').textContent = "You are playing.";
-    document.getElementById('status').classList.remove("slide-fwd-center");
+
     mine.enableClicks();
   },
   generateItem: function (arr) {
@@ -843,11 +844,13 @@ var mine = {
     return cells;
   },
   getAllMarkedCells: function(){
+    let revealedCells = document.getElementsByClassName('reveal');
     let markedCells = document.getElementsByClassName('mark');
     let boomCells = document.getElementsByClassName('boom');
     markedCells = Array.from(markedCells).filter((el) => { return el});
     boomCells = Array.from(boomCells).filter((el) => { return el});
-    let cells = markedCells.concat(boomCells);
+    revealedCells = Array.from(revealedCells).filter((el) => { return el});
+    let cells = markedCells.concat(boomCells,revealedCells);
     return cells;
   },
 
