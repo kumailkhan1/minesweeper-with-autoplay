@@ -80,7 +80,7 @@ var mine = {
       if (!mine.board[row][col].m) {
         mine.board[row][col].m = true;
         // CHEAT - SHOW MINE ON THE BOARD
-        mine.board[row][col].c.innerHTML = "*";
+        // mine.board[row][col].c.innerHTML = "*";
         mToLay--;
       }
     }
