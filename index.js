@@ -169,6 +169,7 @@ var mine = {
     if (mine.lives == 0) {
       setTimeout(function () {
         alert("You lost. Click next to continue");
+        document.getElementById('status').textContent = "You Lost!";
         mine.disableClicks();
         // mine.reset();
       }, 1);
@@ -215,6 +216,7 @@ var mine = {
       if (mine.lives == 0) {
         setTimeout(function () {
           alert("You lost. Click next to continue");
+          document.getElementById('status').textContent = "You Lost.";
           mine.disableClicks();
           // mine.reset();
         }, 1);
@@ -300,6 +302,7 @@ var mine = {
       if (mine.rCell == mine.total) {
         won = true;
         alert("Congratulations! All mines have been identified. Click next to continue.");
+        document.getElementById('status').textContent = "You won!";
         // mine.reset();
         mine.disableClicks();
       }
@@ -440,7 +443,7 @@ var mine = {
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total)
       if (mine.rCell == mine.total) {
-
+        document.getElementById('status').textContent = "You won!";
         won = true;
         alert("YOU WIN!");
         mine.reset();
