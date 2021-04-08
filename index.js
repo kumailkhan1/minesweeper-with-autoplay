@@ -815,10 +815,10 @@ var mine = {
 
           await mine.sleep(mine.time);
           mine.openComp(itemRow, itemColumn);
-          $("#modal-text").text("A cell has been opened.");
-          $("#myModal").css("display", "block");
-          await mine.sleep(2000);
-          $("#myModal").hide()
+          // $("#modal-text").text("A cell has been opened.");
+          // $("#myModal").css("display", "block");
+          // await mine.sleep(2000);
+          // $("#myModal").hide()
           return true;
         }
 
