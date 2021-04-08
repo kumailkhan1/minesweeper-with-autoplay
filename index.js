@@ -156,7 +156,7 @@ var mine = {
         else {
           mine.lives--;
           document.getElementById('lives').textContent = mine.lives;
-          mine.displayModal("There was no mine there. You lost one life.")
+          mine.displayModal("There was no mine there. You lost one life.");
         }
       }
       // else {
@@ -365,9 +365,7 @@ var mine = {
       if (cell.classList.contains('boom')) {
         // mine.bombsFoundByComp += 1;
       }
-      // setTimeout(() => { cell.classList.add("mark"); }, 1000)
-      // mine.board[row][col].x = !mine.board[row][col].x;
-      // mine.bombsFoundByComp -= 1;
+
     }
     // (D3) REVEAL SELECTED CELL + ALL EMPTY ADJACENT CELLS
     else {
@@ -459,22 +457,28 @@ var mine = {
     mine.disableClicks();
     mine.computerTurnRound.shift();
     console.log(mine.computerTurnRound);
-    // mine.callModal("Now, your helper will play for a few rounds.",2000);
-    // mine.callModal("Now, you are in control again",10000);
-    let cells = document.getElementsByClassName('reveal');
-    cells = Array.from(cells).filter((el) => {
-      if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3' || el.textContent == '4') {
-        return el;
-      }
-    })
-    // console.log(cells);
+
+    let cells = mine.getAllCells();
+
 
     mine.displayModal("Now, your helper will play for a few rounds.");
     // Check for adjacent Cells and place Flags routine
     document.getElementById('status').textContent = "You are being helped.";
     document.getElementById('status').classList.add("slide-fwd-center");
-    await mine.checkAdjacent(cells);
+    await mine.checkAdjacentForFlags(cells);
     console.log("HELLOOOOO");
+
+    // Check if all the mines are correctly identified
+    //If not, then open a few cell and run the flag routine again
+
+    while (mine.bombsFoundByComp != 4) {
+      // All the cells with number
+      let cells = mine.getAllCells();
+      await mine.checkAdjacentForOpening(cells);
+      // Run the flag routine again
+      let cells = mine.getAllCells();
+      await mine.checkAdjacentForFlags();
+    }
     document.getElementById('status').textContent = "You are playing.";
     document.getElementById('status').classList.remove("slide-fwd-center");
     mine.enableClicks();
@@ -509,7 +513,7 @@ var mine = {
   sleep: function (ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   },
-  checkAdjacent: async function (cells) {
+  checkAdjacentForFlags: async function (cells) {
     console.log("TOTAL CELLS", cells);
     let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
     for (let i = 0; i < cells.length; i++) {
@@ -663,11 +667,173 @@ var mine = {
     }
 
   },
+  checkAdjacentForOpening: async function (cells) {
+    console.log("TOTAL CELLS", cells);
+    let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
+    for (let i = 0; i < cells.length; i++) {
+      ROW = parseInt(cells[i].dataset.row);
+      COL = parseInt(cells[i].dataset.col);
+      NUMBER = parseInt(mine.board[ROW][COL].a);
+      adjacentCells = [];
+      selectedCell = mine.board[ROW][COL];
+
+      // Look around in adjacent cells for Flags and unopened
+      FLAGS = 0;
+      UNOPENED = 0;
+      let lastRow = ROW - 1,
+        nextRow = ROW + 1;
+      if (nextRow == mine.height) { nextRow = -1; }
+
+
+      // LOOP THROUGH CELLS OF EACH ROW
+
+      let lastCol = COL - 1,
+        nextCol = COL + 1;
+      if (nextCol == mine.width) { nextCol = -1; }
+
+      // CALCULATE ONLY IF CELL DOES NOT CONTAIN MINE
+
+      // COUNTING FLAGS IN LAST ROW
+      if (lastRow != -1) {
+        if (lastCol != -1) {
+          adjacentCells.push(mine.board[lastRow][lastCol])
+          adjacentCells.push(mine.board[ROW][COL])
+          adjacentCells.push(mine.board[lastRow][nextCol])
+          // console.log(mine.board[lastRow][lastCol]);
+          // console.log(mine.board[ROW][COL]);
+          // console.log(mine.board[lastRow][nextCol]);
+          if (mine.board[lastRow][lastCol].x) {
+            FLAGS++;
+          }
+          else if (!mine.board[lastRow][lastCol].r) {
+            UNOPENED++;
+          }
+
+        }
+        if (mine.board[ROW][COL].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[ROW][COL].r) {
+          UNOPENED++;
+        }
+        if (nextCol != -1) {
+          if (mine.board[lastRow][nextCol].x) {
+
+            FLAGS++;
+          }
+          else if (!mine.board[lastRow][nextCol].r) {
+            UNOPENED++;
+          }
+        }
+      }
+
+      // CURRENT ROW
+      if (lastCol != -1) {
+        adjacentCells.push(mine.board[ROW][lastCol])
+        adjacentCells.push(mine.board[ROW][nextCol])
+        // console.log(mine.board[ROW][lastCol]);
+        // console.log(mine.board[ROW][nextCol]);
+        if (mine.board[ROW][lastCol].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[ROW][lastCol].r) {
+          UNOPENED++;
+        }
+      }
+      if (nextCol != -1) {
+        if (mine.board[ROW][nextCol].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[ROW][nextCol].r) {
+          UNOPENED++;
+        }
+      }
+
+      // ADD NUMBER OF MINES IN NEXT ROW
+      if (nextRow != -1) {
+        if (lastCol != -1) {
+          adjacentCells.push(mine.board[nextRow][lastCol])
+          adjacentCells.push(mine.board[nextRow][COL])
+          adjacentCells.push(mine.board[nextRow][nextCol])
+          // console.log(mine.board[nextRow][lastCol]);
+          // console.log(mine.board[nextRow][COL]);
+          // console.log(mine.board[nextRow][nextCol]);
+          if (mine.board[nextRow][lastCol].x) {
+            FLAGS++;
+          }
+          else if (!mine.board[nextRow][lastCol].r) {
+            UNOPENED++;
+          }
+        }
+        if (mine.board[nextRow][COL].x) {
+          FLAGS++;
+        }
+        else if (!mine.board[nextRow][COL].r) {
+          UNOPENED++;
+        }
+        if (nextCol != -1) {
+          if (mine.board[nextRow][nextCol].x) {
+            FLAGS++;
+          }
+          else if (!mine.board[nextRow][nextCol].r) {
+            UNOPENED++;
+          }
+        }
+      }
+      let diff = NUMBER - FLAGS;
+      // console.log("NUMBER", NUMBER);
+      // console.log("DIFFERENCE (num - flags)", diff);
+      // // let ratio = NUMBER / UNOPENED
+      // // console.log("Ratio of number to unopened", ratio);
+      // console.log("AdjacentCells", adjacentCells);
+      console.log(i);
+      if (diff == NUMBER) {
+        let res = await mine.openCells(adjacentCells);
+        if (res) {
+          break;
+        }
+      }
+      // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
+    };
+
+  },
+
+  openCells: async function (adjacentCells) {
+    console.log("Opening Cells with Adjacent Cells", adjacentCells);
+
+    for (let i = 0; i < adjacentCells.length; i++) {
+      if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != 4)) {
+        let itemRow = parseInt(adjacentCells[i].c.dataset.row),
+          itemColumn = parseInt(adjacentCells[i].c.dataset.col);
+
+        if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r) {
+          mine.openComp(itemRow, itemColumn);
+          $("#modal-text").text("A cell has been opened.");
+          $("#myModal").css("display", "block");
+          await mine.sleep(2000);
+          $("#myModal").hide()
+          return true;
+        }
+
+      }
+    }
+    return false;
+  },
   displayModal: async function (text) {
     $("#modal-text").text(text);
     $("#myModal").css("display", "block");
     await mine.sleep(2000);
     $("#myModal").css("display", "none");
+  },
+
+  getAllCells: function () {
+    let cells = document.getElementsByClassName('reveal');
+    cells = Array.from(cells).filter((el) => {
+      if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3' || el.textContent == '4' || el.textContent == '5') {
+        return el;
+      }
+    });
+    return cells;
   }
 
 };
