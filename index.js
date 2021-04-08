@@ -4,7 +4,6 @@ var mine = {
   // (A1) GAME SETTINGS
   result: [],
   time: 3000,
-  totalFlagsFound: 0,
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
   width: 10, // NUMBER OF COLUMNS
@@ -13,8 +12,9 @@ var mine = {
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
   // typesOfTurns: ['open', 'mark'],
-  computerTurnRound: [3], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
-  bombsFoundByComp: 0, //TOTAL bombs that can be found by COMPUTER in a turn
+  computerTurnRound: [1], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
+  bombsFoundByComp: 0, // intermediary variable used to update the mines count
+  totalBombsToIdentify: 3, // TOTAL BOMBS THAT CAN BE FOUND By THE COMPUTER
   ongoingRound: 0,
   numFlaggedCorrectly: 0,
   numFlaggedInorrectly: 0,
@@ -321,7 +321,7 @@ var mine = {
   markComp: function (row, col) {
     let time = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
     let myPromise;
-    if (mine.bombsFoundByComp == 4) {
+    if (mine.bombsFoundByComp == mine.totalBombsToIdentify) {
       return [undefined, undefined];
     }
     let cell = document.getElementById('mine-' + row + '-' + col);
@@ -473,7 +473,7 @@ var mine = {
     // Check if all the mines are correctly identified
     //If not, then open a few cell and run the flag routine again
 
-    while (mine.bombsFoundByComp != 4) {
+    while (mine.bombsFoundByComp != mine.totalBombsToIdentify) {
       // All the cells with number
       let flaggedCells = mine.getAllMarkedCells();
       await mine.checkAdjacentForOpening(flaggedCells);
@@ -647,7 +647,7 @@ var mine = {
     console.log("Placing Flags with Adjacent Cells", adjacentCells);
 
     for (let i = 0; i < adjacentCells.length; i++) {
-      if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != 4)) {
+      if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != mine.totalBombsToIdentify)) {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
         // mine.changesByComp.push(mine.markComp(itemRow, itemColumn));
@@ -807,7 +807,7 @@ var mine = {
     console.log("Opening Cells with Adjacent Cells", adjacentCells);
 
     for (let i = 0; i < adjacentCells.length; i++) {
-      if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != 4)) {
+      if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != mine.totalBombsToIdentify)) {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
 
