@@ -5,7 +5,6 @@ var mine = {
   result: [],
   time: 5000,
   totalFlagsFound: 0,
-  changesByComp: [],
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
   width: 10, // NUMBER OF COLUMNS
@@ -186,7 +185,9 @@ var mine = {
 
     if (!mine.board[row][col].x && mine.board[row][col].m) {
       this.classList.add("boom");
+      mine.displayModal("This was a mine! You lost one life!")
       mine.lives--;
+      
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       document.getElementById('lives').textContent = mine.lives;
       // Check if player lost all three lives
@@ -432,7 +433,8 @@ var mine = {
 
   autoplay: async function () {
     mine.disableClicks();
-    mine.computerTurnRound.pop();
+    mine.computerTurnRound.shift();
+    console.log(mine.computerTurnRound);
     // mine.callModal("Now, your helper will play for a few rounds.",2000);
     // mine.callModal("Now, you are in control again",10000);
     let cells = document.getElementsByClassName('reveal');

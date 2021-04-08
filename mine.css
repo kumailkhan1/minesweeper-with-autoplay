@@ -27,7 +27,9 @@
 }
 
 #mine-wrap .cell.boom {
-  background: #f00;
+  background-image: url("flag.png");
+  background-repeat: no-repeat;
+  background-position: center; 
 }
 
 /* The Modal (background) */
