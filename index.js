@@ -2,7 +2,9 @@ var won = false;
 var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
-  time: 10000,
+  result: [],
+  time: 5000,
+  totalFlagsFound: 0,
   changesByComp: [],
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
@@ -13,7 +15,7 @@ var mine = {
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
   // typesOfTurns: ['open', 'mark'],
   computerTurnRound: [3], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
-  bombsFoundByComp: 4, //TOTAL bombs that can be found by COMPUTER in a turn
+  bombsFoundByComp: 0, //TOTAL bombs that can be found by COMPUTER in a turn
   ongoingRound: 0,
   numFlagged: 0,
   control: false,
@@ -27,7 +29,7 @@ var mine = {
     mine.numFlagged = 0;
     mine.rCell = mine.height * mine.width;
     mine.lives = 3;
-    mine.bombsFoundByComp = 4;
+    mine.bombsFoundByComp = 0;
     mine.ongoingRound = 0;
     mine.toReveal = [];
     mine.toCheck = [];
@@ -190,7 +192,7 @@ var mine = {
       if (mine.lives == 0) {
         setTimeout(function () {
           alert("Oops. You lost.");
-          mine.reset();
+          // mine.reset();
         }, 1);
       }
 
@@ -275,7 +277,7 @@ var mine = {
       if (mine.rCell == mine.total) {
         won = true;
         alert("YOU WIN!");
-        mine.reset();
+        // mine.reset();
       }
 
 
@@ -292,42 +294,37 @@ var mine = {
   markComp: function (row, col) {
     let time = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
     let myPromise;
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (mine.bombsFoundByComp == 0) {
-          return;
-        }
-        let cell = document.getElementById('mine-' + row + '-' + col);
-        // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
-        if (cell.classList.contains('boom')) {
-          //  do nothing
+    if (mine.bombsFoundByComp == 4) {
+      return [undefined, undefined];
+    }
+    let cell = document.getElementById('mine-' + row + '-' + col);
+    // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
+    if (cell.classList.contains('boom')) {
+      //  do nothing
+
+    }
+    else {
+      if (!mine.board[row][col].r) {
+        // if it is already marked and it contains mine 
+        if (mine.board[row][col].m && mine.board[row][col].x) {
+          // DO NOTHING AS IT IS ALREADY MARKED BY USER
 
         }
-        else {
-          if (!mine.board[row][col].r) {
-            // if it is already marked and it contains mine 
-            if (mine.board[row][col].m && mine.board[row][col].x) {
-              // DO NOTHING AS IT IS ALREADY MARKED BY USER
+        // if it has mine but unmarked
+        else if (mine.board[row][col].m && !mine.board[row][col].x) {
 
-            }
-            // if it has mine but unmarked
-            else if (mine.board[row][col].m && !mine.board[row][col].x) {
+          mine.bombsFoundByComp++;
+          mine.numFlagged++;
 
-              mine.bombsFoundByComp--;
-              mine.numFlagged++;
-              document.getElementById('flaggedCells').textContent = mine.numFlagged;
-              // mine.changesByComp.push(cell);
-              cell.classList.toggle("mark");
-              mine.board[row][col].x = !mine.board[row][col].x;
-
-            }
-          }
+          // mine.changesByComp.push(cell);
+          // cell.classList.toggle("mark");
+          mine.board[row][col].x = !mine.board[row][col].x;
+          let result = mine.bombsFoundByComp;
+          return [result, cell];
         }
-        resolve('ok');
-      }, mine.time)
-    });
-    return myPromise;
-
+      }
+    }
+    return [undefined, undefined];
     // (C1) GET COORDS OF SELECTED CELL
   },
   // (D) LEFT CLICK TO OPEN CELL
@@ -441,17 +438,49 @@ var mine = {
       }
     })
     // console.log(cells);
-    let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
 
-    $("#modal-text").text("Now, your helper will play for a few rounds.");
+    mine.displayModal("Now, your helper will play for a few rounds.");
+    // Check for adjacent Cells and place Flags routine
+    await mine.checkAdjacent(cells);
+    console.log("HELLOOOOO");
+    mine.enableClicks();
+  },
+  generateItem: function (arr) {
+
+    let randomItem = arr[Math.floor(Math.random() * arr.length)];
+    return randomItem;
+  },
+
+  disableClicks: function () {
+    for (let row = 0; row < mine.height; row++) {
+      for (let col = 0; col < mine.width; col++) {
+        let cell = mine.board[row][col].c;
+        cell.removeEventListener("click", mine.open);
+        cell.removeEventListener("contextmenu", mine.mark);
+      }
+    }
+  },
+  enableClicks: function () {
+    $("#modal-text").text("Now, you are in control again");
     $("#myModal").css("display", "block");
     setTimeout(() => { $("#myModal").hide() }, 3000);
-
-    let cellIndex = 0;
-    console.log("first modal", $("#modal-text").text());
-    cells.forEach((el, idx) => {
-      ROW = parseInt(el.dataset.row);
-      COL = parseInt(el.dataset.col);
+    for (let row = 0; row < mine.height; row++) {
+      for (let col = 0; col < mine.width; col++) {
+        let cell = mine.board[row][col].c;
+        cell.addEventListener("click", mine.open);
+        cell.addEventListener("contextmenu", mine.mark);
+      }
+    }
+  },
+  sleep: function (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
+  checkAdjacent: async function (cells) {
+    console.log("TOTAL CELLS", cells);
+    let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
+    for (let i = 0; i < cells.length; i++) {
+      ROW = parseInt(cells[i].dataset.row);
+      COL = parseInt(cells[i].dataset.col);
       NUMBER = parseInt(mine.board[ROW][COL].a);
       adjacentCells = [];
       selectedCell = mine.board[ROW][COL];
@@ -559,72 +588,55 @@ var mine = {
           }
         }
       }
-      // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
       let diff = NUMBER - FLAGS;
-
-      let count = 0;
       // console.log("NUMBER", NUMBER);
       // console.log("DIFFERENCE (num - flags)", diff);
       // // let ratio = NUMBER / UNOPENED
       // // console.log("Ratio of number to unopened", ratio);
       // console.log("AdjacentCells", adjacentCells);
+      console.log(i);
       if (diff == UNOPENED) {
-        adjacentCells.forEach((el) => {
-          if (el != undefined && (mine.bombsFoundByComp != 0)) {
-            let itemRow = parseInt(el.c.dataset.row),
-              itemColumn = parseInt(el.c.dataset.col);
-            mine.changesByComp.push(mine.markComp(itemRow, itemColumn));
+        await mine.placeFlags(adjacentCells);
+      }
+      // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
+    };
 
-          }
+  },
+  placeFlags: async function (adjacentCells) {
+    console.log("Placing Flags with Adjacent Cells", adjacentCells);
 
-        })
+    for (let i = 0; i < adjacentCells.length; i++) {
+      if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != 4)) {
+        let itemRow = parseInt(adjacentCells[i].c.dataset.row),
+          itemColumn = parseInt(adjacentCells[i].c.dataset.col);
+        // mine.changesByComp.push(mine.markComp(itemRow, itemColumn));
+        const [result, cell] = mine.markComp(itemRow, itemColumn);
+        console.log(cell);
+        // await mine.sleep(mine.time);
+        console.log("return from markComp", result);
+        if (result != undefined && cell != undefined) {
+          await mine.sleep(mine.time);
+          document.getElementById('flaggedCells').textContent = mine.numFlagged;
+          cell.classList.toggle("mark");
+          $("#modal-text").text(mine.bombsFoundByComp + " flag(s) found");
+          $("#myModal").css("display", "block");
+          await mine.sleep(2000);
+          $("#myModal").hide()
+        }
+
+
+
 
       }
-
-    });
-    console.log(mine.bombsFoundByComp);
-
-    for (let i = 1; i <= mine.bombsFoundByComp; i++) {
-      $("#modal-text").text(i+" flag(s) found");
-      $("#myModal").css("display", "block");
-      await mine.sleep(mine.time / mine.bombsFoundByComp)
-      $("#myModal").hide()
     }
 
-
-    Promise.some(mine.changesByComp, 4).then(() => { mine.enableClicks() });
   },
-  generateItem: function (arr) {
-
-    let randomItem = arr[Math.floor(Math.random() * arr.length)];
-    return randomItem;
-  },
-
-  disableClicks: function () {
-    for (let row = 0; row < mine.height; row++) {
-      for (let col = 0; col < mine.width; col++) {
-        let cell = mine.board[row][col].c;
-        cell.removeEventListener("click", mine.open);
-        cell.removeEventListener("contextmenu", mine.mark);
-      }
-    }
-  },
-  enableClicks: function () {
-    $("#modal-text").text("Now, you are in control again");
+  displayModal: async function (text) {
+    $("#modal-text").text(text);
     $("#myModal").css("display", "block");
-    setTimeout(() => { $("#myModal").hide() }, 3000);
-    for (let row = 0; row < mine.height; row++) {
-      for (let col = 0; col < mine.width; col++) {
-        let cell = mine.board[row][col].c;
-        cell.addEventListener("click", mine.open);
-        cell.addEventListener("contextmenu", mine.mark);
-      }
-    }
-  },
-  sleep: function (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  },
-
+    await mine.sleep(2000);
+    $("#myModal").css("display", "none");
+  }
 
 };
 
