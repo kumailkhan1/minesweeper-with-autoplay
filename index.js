@@ -3,7 +3,7 @@ var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
   result: [],
-  time: 5000,
+  time: 10000,
   totalFlagsFound: 0,
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
