@@ -38,6 +38,7 @@ var mine = {
     document.getElementById('lives').textContent = mine.lives;
     document.getElementById('flaggedCells').textContent = mine.numFlagged;
     document.getElementById('totalMines').textContent = mine.total;
+    document.getElementById('status').textContent = "You are playing.";
 
     // (B2) GET + RESET HTML WRAPPER
     let wrap = document.getElementById("mine-wrap"),
@@ -443,6 +444,7 @@ var mine = {
 
     mine.displayModal("Now, your helper will play for a few rounds.");
     // Check for adjacent Cells and place Flags routine
+    document.getElementById('status').textContent = "You are being helped.";
     await mine.checkAdjacent(cells);
     console.log("HELLOOOOO");
     mine.enableClicks();
