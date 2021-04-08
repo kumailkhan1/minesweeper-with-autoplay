@@ -791,7 +791,7 @@ var mine = {
       // console.log("AdjacentCells", adjacentCells);
       console.log(i);
       //equal number of flags or no flags
-      if (diff == 0 || diff < 0 ) {
+      if (diff == 0 || diff < 0) {
         let res = await mine.openCells(adjacentCells);
         console.log(res);
         if (res) {
@@ -812,8 +812,9 @@ var mine = {
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
 
         if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r) {
-          mine.openComp(itemRow, itemColumn);
+
           await mine.sleep(mine.time);
+          mine.openComp(itemRow, itemColumn);
           $("#modal-text").text("A cell has been opened.");
           $("#myModal").css("display", "block");
           await mine.sleep(2000);
@@ -825,7 +826,7 @@ var mine = {
     }
     return false;
   },
-  
+
   displayModal: async function (text) {
     $("#modal-text").text(text);
     $("#myModal").css("display", "block");
@@ -843,14 +844,14 @@ var mine = {
     });
     return cells;
   },
-  getAllMarkedCells: function(){
+  getAllMarkedCells: function () {
     let revealedCells = document.getElementsByClassName('reveal');
     let markedCells = document.getElementsByClassName('mark');
     let boomCells = document.getElementsByClassName('boom');
-    markedCells = Array.from(markedCells).filter((el) => { return el});
-    boomCells = Array.from(boomCells).filter((el) => { return el});
-    revealedCells = Array.from(revealedCells).filter((el) => { return el});
-    let cells = markedCells.concat(boomCells,revealedCells);
+    markedCells = Array.from(markedCells).filter((el) => { return el });
+    boomCells = Array.from(boomCells).filter((el) => { return el });
+    revealedCells = Array.from(revealedCells).filter((el) => { return el });
+    let cells = markedCells.concat(boomCells, revealedCells);
     return cells;
   },
 
