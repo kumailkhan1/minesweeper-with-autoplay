@@ -3,22 +3,21 @@ var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
   result: [],
-  time: 3000,
+  time: 3000, // TIME between opening of cells OR placing of flags
   total: 15, // TOTAL NUMBER OF MINES
   height: 10, // NUMBER OF ROWS
   width: 10, // NUMBER OF COLUMNS
   lives: 3, // NUMBER OF LIVES PLAYER HAS
-  // (A2) GAME FLAGS
+
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
-  // typesOfTurns: ['open', 'mark'],
   computerTurnRound: [1], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 0, // intermediary variable used to update the mines count
   totalBombsToIdentify: 3, // TOTAL BOMBS THAT CAN BE FOUND By THE COMPUTER
   ongoingRound: 0,
   numFlaggedCorrectly: 0,
   numFlaggedInorrectly: 0,
-  control: false,
+
   toReveal: [], // ALL CELLS TO REVEAL
   toCheck: [], // ALL CELLS TO CHECK
   checked: [], // ALL CELL THAT HAVE ALREADY BEEN CHECKED
@@ -165,6 +164,16 @@ var mine = {
 
 
     }
+    let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+    console.log("Total Flagged", totalFlagged);
+    if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
+      won = true;
+      alert("Congratulations! All mines have been identified. Click next to continue.");
+      document.getElementById('status').textContent = "You Won!";
+      // mine.reset();
+      mine.disableClicks();
+    }
+
     if (mine.lives == 0) {
       setTimeout(function () {
         alert("You lost. Click next to continue");
@@ -298,7 +307,9 @@ var mine = {
       }
       // console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total);
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
-      if (mine.rCell == mine.total) {
+      let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+      console.log("Total Flagged", totalFlagged);
+      if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         won = true;
         alert("Congratulations! All mines have been identified. Click next to continue.");
         document.getElementById('status').textContent = "You Won!";
@@ -306,7 +317,14 @@ var mine = {
         mine.disableClicks();
       }
 
-
+      if (mine.lives == 0) {
+        setTimeout(function () {
+          alert("You lost. Click next to continue");
+          document.getElementById('status').textContent = "You Lost!";
+          mine.disableClicks();
+          // mine.reset();
+        }, 1);
+      }
 
 
 
@@ -351,6 +369,16 @@ var mine = {
         }
       }
     }
+    let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+    console.log("Total Flagged", totalFlagged);
+    if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
+      won = true;
+      alert("Congratulations! All mines have been identified. Click next to continue.");
+      document.getElementById('status').textContent = "You Won!";
+      // mine.reset();
+      mine.disableClicks();
+    }
+
     return [undefined, undefined];
     // (C1) GET COORDS OF SELECTED CELL
   },
@@ -439,7 +467,9 @@ var mine = {
 
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total)
-      if (mine.rCell == mine.total) {
+      let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+      console.log("Total Flagged", totalFlagged);
+      if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         document.getElementById('status').textContent = "You won!";
         won = true;
         alert("YOU WIN!");
