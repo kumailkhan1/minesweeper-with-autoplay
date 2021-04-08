@@ -39,7 +39,6 @@ var mine = {
     document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly;
     document.getElementById('totalMines').textContent = mine.total;
     document.getElementById('status').textContent = "You are playing.";
-
     // (B2) GET + RESET HTML WRAPPER
     let wrap = document.getElementById("mine-wrap"),
       cssWidth = 100 / mine.width;
@@ -458,14 +457,17 @@ var mine = {
     mine.computerTurnRound.shift();
     console.log(mine.computerTurnRound);
 
-    let cells = mine.getAllCells();
+    let cells = mine.getAllRevealedCells();
 
-
+    console.log(cells);
     mine.displayModal("Now, your helper will play for a few rounds.");
     // Check for adjacent Cells and place Flags routine
     document.getElementById('status').textContent = "You are being helped.";
     document.getElementById('status').classList.add("slide-fwd-center");
-    await mine.checkAdjacentForFlags(cells);
+    if (cells.length != 0) {
+      await mine.checkAdjacentForFlags(cells);
+    }
+
     console.log("HELLOOOOO");
 
     // Check if all the mines are correctly identified
@@ -473,11 +475,11 @@ var mine = {
 
     while (mine.bombsFoundByComp != 4) {
       // All the cells with number
-      let cells = mine.getAllCells();
-      await mine.checkAdjacentForOpening(cells);
+      let flaggedCells = mine.getAllMarkedCells();
+      await mine.checkAdjacentForOpening(flaggedCells);
       // Run the flag routine again
-      cells = mine.getAllCells();
-      await mine.checkAdjacentForFlags(cells);
+      let markedCells = mine.getAllRevealedCells();
+      await mine.checkAdjacentForFlags(markedCells);
     }
     document.getElementById('status').textContent = "You are playing.";
     document.getElementById('status').classList.remove("slide-fwd-center");
@@ -514,7 +516,7 @@ var mine = {
     return new Promise(resolve => setTimeout(resolve, ms));
   },
   checkAdjacentForFlags: async function (cells) {
-    console.log("TOTAL CELLS", cells);
+    console.log("TOTAL CELLS FOR FLAGS", cells);
     let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
     for (let i = 0; i < cells.length; i++) {
       ROW = parseInt(cells[i].dataset.row);
@@ -668,7 +670,7 @@ var mine = {
 
   },
   checkAdjacentForOpening: async function (cells) {
-    console.log("TOTAL CELLS", cells);
+    console.log("TOTAL CELLS FOR OPENING", cells);
     let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
     for (let i = 0; i < cells.length; i++) {
       ROW = parseInt(cells[i].dataset.row);
@@ -787,8 +789,10 @@ var mine = {
       // // console.log("Ratio of number to unopened", ratio);
       // console.log("AdjacentCells", adjacentCells);
       console.log(i);
-      if (diff == NUMBER) {
+      //equal number of flags or no flags
+      if (diff == 0 || diff < 0 ) {
         let res = await mine.openCells(adjacentCells);
+        console.log(res);
         if (res) {
           break;
         }
@@ -808,6 +812,7 @@ var mine = {
 
         if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r) {
           mine.openComp(itemRow, itemColumn);
+          await mine.sleep(mine.time);
           $("#modal-text").text("A cell has been opened.");
           $("#myModal").css("display", "block");
           await mine.sleep(2000);
@@ -819,6 +824,7 @@ var mine = {
     }
     return false;
   },
+  
   displayModal: async function (text) {
     $("#modal-text").text(text);
     $("#myModal").css("display", "block");
@@ -826,15 +832,24 @@ var mine = {
     $("#myModal").css("display", "none");
   },
 
-  getAllCells: function () {
+  getAllRevealedCells: function () {
     let cells = document.getElementsByClassName('reveal');
+    console.log("revealed cells", cells);
     cells = Array.from(cells).filter((el) => {
       if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3' || el.textContent == '4' || el.textContent == '5') {
         return el;
       }
     });
     return cells;
-  }
+  },
+  getAllMarkedCells: function(){
+    let markedCells = document.getElementsByClassName('mark');
+    let boomCells = document.getElementsByClassName('boom');
+    markedCells = Array.from(markedCells).filter((el) => { return el});
+    boomCells = Array.from(boomCells).filter((el) => { return el});
+    let cells = markedCells.concat(boomCells);
+    return cells;
+  },
 
 };
 
