@@ -152,7 +152,7 @@ var mine = {
           mine.numFlagged++;
           document.getElementById('flaggedCells').textContent = mine.numFlagged;
         }
-        else{
+        else {
           mine.lives--;
           document.getElementById('lives').textContent = mine.lives;
           mine.displayModal("There was no mine there. You lost one life.")
@@ -162,7 +162,7 @@ var mine = {
       //   this.classList.toggle("mark");
       //   mine.board[row][col].x = !mine.board[row][col].x;
       // }
-      
+
 
     }
     if (mine.lives == 0) {
@@ -190,16 +190,21 @@ var mine = {
     let row = this.dataset.row,
       col = this.dataset.col;
 
-    if (mine.board[row][col].r || mine.board[row][col].x) { }
-    else {
-      mine.ongoingRound++;
-    }
 
-    if (!mine.board[row][col].x && mine.board[row][col].m) {
+    if (mine.board[row][col].r || mine.board[row][col].x) { }
+
+    if (mine.board[row][col].x && mine.board[row][col].m) {
+      // user clicks on already marked bomb, do nothing
+
+    }
+  
+
+    else if (!mine.board[row][col].x && mine.board[row][col].m) {
+      mine.ongoingRound++;
       this.classList.add("boom");
       mine.displayModal("This was a mine! You lost one life!")
       mine.lives--;
-      
+      mine.board[row][col].x = !mine.board[row][col].x;
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       document.getElementById('lives').textContent = mine.lives;
       // Check if player lost all three lives
@@ -215,8 +220,7 @@ var mine = {
     // (D3) REVEAL SELECTED CELL + ALL EMPTY ADJACENT CELLS
     else {
       // (D3A) FLAGS - WHICH CELLS SHOULD WE AUTOMATICALLY REVEAL?
-
-
+      mine.ongoingRound++;
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       mine.toReveal = [], // ALL CELLS TO REVEAL
         mine.toCheck = [], // ALL CELLS TO CHECK
@@ -295,6 +299,7 @@ var mine = {
         // mine.reset();
         mine.disableClicks();
       }
+
 
 
 
@@ -663,6 +668,4 @@ var mine = {
 };
 
 
-
 window.addEventListener("DOMContentLoaded", mine.reset);
-

@@ -26,11 +26,13 @@
   background: powderblue;
 }
 
-#mine-wrap .cell.boom {
-  background-image: url("flag.png");
+#mine-wrap .cell.boom{
+  background-image: url("bomb.png");
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center; 
 }
+
 
 /* The Modal (background) */
 
