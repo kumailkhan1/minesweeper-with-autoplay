@@ -152,14 +152,26 @@ var mine = {
           mine.numFlagged++;
           document.getElementById('flaggedCells').textContent = mine.numFlagged;
         }
+        else{
+          mine.lives--;
+          document.getElementById('lives').textContent = mine.lives;
+          mine.displayModal("There was no mine there. You lost one life.")
+        }
       }
-      else {
-        this.classList.toggle("mark");
-        mine.board[row][col].x = !mine.board[row][col].x;
-      }
+      // else {
+      //   this.classList.toggle("mark");
+      //   mine.board[row][col].x = !mine.board[row][col].x;
+      // }
+      
 
     }
-
+    if (mine.lives == 0) {
+      setTimeout(function () {
+        alert("You lost. Click next to continue");
+        mine.disableClicks();
+        // mine.reset();
+      }, 1);
+    }
     mine.computerTurnRound.forEach(elem => {
       if (mine.numFlagged == elem) {
         mine.autoplay();
@@ -193,7 +205,7 @@ var mine = {
       // Check if player lost all three lives
       if (mine.lives == 0) {
         setTimeout(function () {
-          alert("Oops. You lost.");
+          alert("You lost. Click next to continue");
           mine.disableClicks();
           // mine.reset();
         }, 1);
@@ -279,7 +291,7 @@ var mine = {
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       if (mine.rCell == mine.total) {
         won = true;
-        alert("YOU WIN!");
+        alert("Congratulations! All mines have been identified. Click next to continue.");
         // mine.reset();
         mine.disableClicks();
       }
@@ -448,9 +460,11 @@ var mine = {
     mine.displayModal("Now, your helper will play for a few rounds.");
     // Check for adjacent Cells and place Flags routine
     document.getElementById('status').textContent = "You are being helped.";
+    document.getElementById('status').classList.add("slide-fwd-center");
     await mine.checkAdjacent(cells);
     console.log("HELLOOOOO");
     document.getElementById('status').textContent = "You are playing.";
+    document.getElementById('status').classList.remove("slide-fwd-center");
     mine.enableClicks();
   },
   generateItem: function (arr) {

@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>
-      Simple Javascript Minesweeper
-    </title>
-    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <link rel="stylesheet" type="text/css" href="mine.css">
-    <script src="index.js"></script>
-    <script src="bluebird.js"></script>
-  </head>
-  <body>
-    <div id="myModal" class="modal">
 
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <p id="modal-text"></p>
-      </div>
-    
+<head>
+  <title>
+    Simple Javascript Minesweeper
+  </title>
+  <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+  <link rel="stylesheet" type="text/css" href="mine.css">
+  <script src="index.js"></script>
+  <script src="bluebird.js"></script>
+</head>
+
+<body>
+  <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modal-text"></p>
     </div>
 
-    <p>Lives: <span id="lives"></span></p>
-    <p>Moves: <span id="ongoingTurn"></span></p>
-    <p>Mines Flagged: <span id="flaggedCells"></span> out of <span id="totalMines"></span></p>
+  </div>
+
+  <p>Lives: <span id="lives"></span></p>
+  <p>Moves: <span id="ongoingTurn"></span></p>
+  <p>Mines Flagged: <span id="flaggedCells"></span> out of <span id="totalMines"></span></p>
+
     <p>Status: <span id="status"></span></p>
-    <!-- [GAME WRAPPER] -->
-    <div id="mine-wrap"></div>
+
+  <!-- [GAME WRAPPER] -->
+  <div id="mine-wrap"></div>
 
 
-  </body>
+</body>
+
 </html>
