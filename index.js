@@ -447,6 +447,7 @@ var mine = {
     document.getElementById('status').textContent = "You are being helped.";
     await mine.checkAdjacent(cells);
     console.log("HELLOOOOO");
+    document.getElementById('status').textContent = "You are playing.";
     mine.enableClicks();
   },
   generateItem: function (arr) {
