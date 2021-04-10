@@ -851,6 +851,7 @@ var mine = {
       }
       else {
         console.log("RANDOMMMM");
+        
         let row = Math.floor(Math.random() * (mine.height - 1));
         let col = Math.floor(Math.random() * (mine.width - 1));
         await mine.openComp(row,col)
