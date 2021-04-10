@@ -174,8 +174,8 @@ var mine = {
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
-      Qualtrics.SurveyEngine.setEmbeddedData('won', won);
-      Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+      // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
+      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -319,8 +319,8 @@ var mine = {
       console.log("Total Flagged", totalFlagged);
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         won = true;
-        Qualtrics.SurveyEngine.setEmbeddedData('won', won);
-        Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+        // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
+        // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
         alert("Congratulations! All mines have been identified. Click next to continue.");
         document.getElementById('status').textContent = "You Won!";
         // mine.reset();
@@ -383,8 +383,8 @@ var mine = {
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
-      Qualtrics.SurveyEngine.setEmbeddedData('won', won);
-      Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+      // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
+      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -484,8 +484,8 @@ var mine = {
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         document.getElementById('status').textContent = "You won!";
         won = true;
-        Qualtrics.SurveyEngine.setEmbeddedData('won', won);
-        Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+        // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
+        // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
         alert("YOU WIN!");
         mine.reset();
         return;
