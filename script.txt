@@ -1,3 +1,4 @@
+<script>
 var won = false;
 var mine = {
   // (A) PROPERTIES
@@ -11,7 +12,7 @@ var mine = {
 
   board: [], // CURRENT GAME BOARD
   rCell: 0, // NUMBER OF REMAINING HIDDEN CELLS
-  computerTurnRound: [], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
+  computerTurnRound: [1], //ROUNDS IN WHICH COMPUTER TAKES CONTROL
   bombsFoundByComp: 0, // intermediary variable used to update the mines count
   totalBombsToIdentify: 3, // TOTAL BOMBS THAT CAN BE FOUND By THE COMPUTER
   ongoingRound: 0,
@@ -128,7 +129,7 @@ var mine = {
   },
 
   // (C) RIGHT CLICK TO MARK CELL
-  mark: async function (evt) {
+  mark: function (evt) {
     // (C1) GET COORDS OF SELECTED CELL
     let row = this.dataset.row,
       col = this.dataset.col;
@@ -147,19 +148,16 @@ var mine = {
     else if (!mine.board[row][col].r) {
       // if it is NOT already marked and it contains mine 
       if (!mine.board[row][col].x) {
-       
+        this.classList.toggle("mark");
+        mine.board[row][col].x = !mine.board[row][col].x;
         if (mine.board[row][col].m) {
-          this.classList.toggle("mark");
-          mine.board[row][col].x = !mine.board[row][col].x;
           mine.numFlaggedCorrectly++;
           document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
         }
         else {
           mine.lives--;
-          // mine.board[row][col].r = !mine.board[row][col].r;
-          // mine.rCell--;
-          await mine.openComp(row,col)
-          console.log("hell");
+          mine.board[row][col].r = !mine.board[row][col].r;
+          mine.rCell--;
           document.getElementById('lives').textContent = mine.lives;
           mine.displayModal("There was no mine there. You lost one life.");
         }
@@ -903,4 +901,6 @@ var mine = {
 };
 
 
-window.addEventListener("DOMContentLoaded", mine.reset([2],3));
+//window.addEventListener("DOMContentLoaded", mine.reset);
+
+</script>
