@@ -15,8 +15,7 @@ var mine = {
   bombsFoundByComp: 0, // intermediary variable used to update the mines count
   totalBombsToIdentify: 3, // TOTAL BOMBS THAT CAN BE FOUND By THE COMPUTER
   ongoingRound: 0,
-  numFlaggedCorrectly: 0,
-  numFlaggedInorrectly: 0,
+  numFlagged: 0,
 
   toReveal: [], // ALL CELLS TO REVEAL
   toCheck: [], // ALL CELLS TO CHECK
@@ -27,7 +26,7 @@ var mine = {
     mine.board = [];
     mine.computerTurnRound = computerTurnRound;
     mine.totalBombsToIdentify = totalBombsToIdentify;
-    mine.numFlaggedCorrectly = 0;
+    mine.numFlagged = 0;
     mine.rCell = mine.height * mine.width;
     mine.lives = 3;
     mine.bombsFoundByComp = 0;
@@ -37,7 +36,7 @@ var mine = {
     mine.checked = [];
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     document.getElementById('lives').textContent = mine.lives;
-    document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly;
+    document.getElementById('flaggedCells').textContent = mine.numFlagged;
     document.getElementById('totalMines').textContent = mine.total;
     document.getElementById('status').textContent = "You are playing.";
     // (B2) GET + RESET HTML WRAPPER
@@ -136,9 +135,9 @@ var mine = {
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
 
-    // If user clicked on it before OR it contains mine and marked as well, then dont update numFlaggedCorrectly and don't allow unmarking
+    // If user clicked on it before OR it contains mine and marked as well, then dont update numFlagged and don't allow unmarking
     if (this.classList.contains('boom') || (mine.board[row][col].m && mine.board[row][col].x)) {
-      document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+      document.getElementById('flaggedCells').textContent = mine.numFlagged;
       //Do nothing
 
     }
@@ -151,8 +150,8 @@ var mine = {
         if (mine.board[row][col].m) {
           this.classList.toggle("mark");
           mine.board[row][col].x = !mine.board[row][col].x;
-          mine.numFlaggedCorrectly++;
-          document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+          mine.numFlagged++;
+          document.getElementById('flaggedCells').textContent = mine.numFlagged;
         }
         else {
           mine.lives--;
@@ -171,7 +170,7 @@ var mine = {
 
 
     }
-    let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+    let totalFlagged = mine.numFlagged;
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
@@ -192,7 +191,7 @@ var mine = {
       }, 1);
     }
     mine.computerTurnRound.forEach(elem => {
-      if (mine.numFlaggedCorrectly == elem) {
+      if (mine.numFlagged == elem) {
         mine.autoplay();
       }
     })
@@ -223,8 +222,8 @@ var mine = {
 
       this.classList.add("boom");
       mine.displayModal("This was a mine! You lost one life!")
-      mine.numFlaggedInorrectly++;
-      document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+      mine.numFlagged++;
+      document.getElementById('flaggedCells').textContent = mine.numFlagged;
       mine.lives--;
       mine.board[row][col].x = !mine.board[row][col].x;
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
@@ -316,7 +315,7 @@ var mine = {
       }
       // console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total);
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
-      let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+      let totalFlagged = mine.numFlagged;
       console.log("Total Flagged", totalFlagged);
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         won = true;
@@ -342,7 +341,7 @@ var mine = {
     }
     mine.computerTurnRound.forEach(elem => {
 
-      if (mine.numFlaggedCorrectly == elem) {
+      if (mine.numFlagged == elem) {
         mine.autoplay();
       }
     });
@@ -370,7 +369,7 @@ var mine = {
         else if (mine.board[row][col].m && !mine.board[row][col].x) {
 
           mine.bombsFoundByComp++;
-          mine.numFlaggedCorrectly++;
+          mine.numFlagged++;
 
           // mine.changesByComp.push(cell);
           // cell.classList.toggle("mark");
@@ -380,7 +379,7 @@ var mine = {
         }
       }
     }
-    let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+    let totalFlagged = mine.numFlagged + mine.numFlaggedInorrectly;
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
@@ -480,7 +479,7 @@ var mine = {
 
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total)
-      let totalFlagged = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;
+      let totalFlagged = mine.numFlagged + mine.numFlaggedInorrectly;
       console.log("Total Flagged", totalFlagged);
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         document.getElementById('status').textContent = "You won!";
@@ -682,6 +681,7 @@ var mine = {
       // console.log("AdjacentCells", adjacentCells);
       console.log(i);
       if (diff == UNOPENED) {
+        if(mine.bombsFoundByComp != mine.totalBombsToIdentify)
         await mine.placeFlags(adjacentCells);
       }
       // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
@@ -700,7 +700,7 @@ var mine = {
         // await mine.sleep(mine.time);
         if (result != undefined && cell != undefined) {
           await mine.sleep(mine.time);
-          document.getElementById('flaggedCells').textContent = mine.numFlaggedCorrectly + mine.numFlaggedInorrectly;;
+          document.getElementById('flaggedCells').textContent = mine.numFlagged;
           cell.classList.toggle("mark");
           jQuery("#modal-text").text(mine.bombsFoundByComp + " flag(s) found");
           jQuery("#myModal").css("display", "block");
@@ -903,4 +903,4 @@ var mine = {
 };
 
 
-window.addEventListener("DOMContentLoaded", mine.reset([2],3));
+window.addEventListener("DOMContentLoaded", mine.reset([13],2));
