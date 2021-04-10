@@ -480,7 +480,7 @@ var mine = {
 
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
       console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total)
-      let totalFlagged = mine.numFlagged + mine.numFlaggedInorrectly;
+      let totalFlagged = mine.numFlagged;
       console.log("Total Flagged", totalFlagged);
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         document.getElementById('status').textContent = "You won!";
@@ -851,7 +851,7 @@ var mine = {
       }
       else {
         console.log("RANDOMMMM");
-        
+
         let row = Math.floor(Math.random() * (mine.height - 1));
         let col = Math.floor(Math.random() * (mine.width - 1));
         await mine.openComp(row,col)
