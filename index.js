@@ -28,7 +28,6 @@ var mine = {
     mine.totalBombsToIdentify = totalBombsToIdentify;
     mine.numFlagged = 0;
     mine.rCell = mine.height * mine.width;
-    mine.lives = 4;
     mine.bombsFoundByComp = 0;
     mine.ongoingRound = 0;
     mine.toReveal = [];
