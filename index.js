@@ -903,4 +903,4 @@ var mine = {
 };
 
 
-window.addEventListener("DOMContentLoaded", mine.reset([13],2));
+window.addEventListener("DOMContentLoaded", mine.reset([3],3));
