@@ -157,18 +157,19 @@ var mine = {
           mine.lives--;
           // mine.board[row][col].r = !mine.board[row][col].r;
           // mine.rCell--;
-          await mine.openComp(row, col)
-          console.log("hell");
+          await mine.displayModal("There was no mine there. You lost one life.");
           document.getElementById('lives').textContent = mine.lives;
-          mine.displayModal("There was no mine there. You lost one life.");
+          await mine.openComp(row, col)
+          if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
+            return;
+          }
+
         }
       }
       // else {
       //   this.classList.toggle("mark");
       //   mine.board[row][col].x = !mine.board[row][col].x;
       // }
-
-
     }
     let totalFlagged = mine.numFlagged;
     console.log("Total Flagged", totalFlagged);
@@ -182,7 +183,7 @@ var mine = {
       mine.disableClicks();
     }
 
-    if (mine.lives == 0) {
+    else if (mine.lives == 0) {
       setTimeout(function () {
         alert("You lost. Click next to continue");
         document.getElementById('status').textContent = "You Lost!";
@@ -190,6 +191,7 @@ var mine = {
         // mine.reset();
       }, 1);
     }
+
     mine.computerTurnRound.forEach(elem => {
       if (mine.numFlagged == elem) {
         mine.autoplay();
@@ -202,7 +204,7 @@ var mine = {
 
 
   // (D) LEFT CLICK TO OPEN CELL
-  open: function () {
+  open: async function () {
 
     // (D1) GET COORDS OF SELECTED CELL
     let row = this.dataset.row,
@@ -221,22 +223,22 @@ var mine = {
       mine.ongoingRound++;
 
       this.classList.add("boom");
-      mine.displayModal("This was a mine! You lost one life!")
+      await mine.displayModal("This was a mine! You lost one life!")
       mine.numFlagged++;
       document.getElementById('flaggedCells').textContent = mine.numFlagged;
       mine.lives--;
       mine.board[row][col].x = !mine.board[row][col].x;
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       document.getElementById('lives').textContent = mine.lives;
-      // Check if player lost all three lives
-      if (mine.lives == 0) {
-        setTimeout(function () {
-          alert("You lost. Click next to continue");
-          document.getElementById('status').textContent = "You Lost.";
-          mine.disableClicks();
-          // mine.reset();
-        }, 1);
-      }
+      // // Check if player lost all three lives
+      // if (mine.lives == 0) {
+      //   setTimeout(function () {
+      //     alert("You lost. Click next to continue");
+      //     document.getElementById('status').textContent = "You Lost.";
+      //     mine.disableClicks();
+      //     // mine.reset();
+      //   }, 1);
+      // }
 
     }
     // (D3) REVEAL SELECTED CELL + ALL EMPTY ADJACENT CELLS
@@ -315,30 +317,32 @@ var mine = {
       }
       // console.log("OPEN", "mine.rCell: ", mine.rCell, "mine.total", mine.total);
       // (D3D) NO CELLS LEFT TO OPEN - WIN!
-      let totalFlagged = mine.numFlagged;
-      console.log("Total Flagged", totalFlagged);
-      if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
-        won = true;
-        // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
-        // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
-        alert("Congratulations! All mines have been identified. Click next to continue.");
-        document.getElementById('status').textContent = "You Won!";
-        // mine.reset();
-        mine.disableClicks();
-      }
-
-      if (mine.lives == 0) {
-        setTimeout(function () {
-          alert("You lost. Click next to continue");
-          document.getElementById('status').textContent = "You Lost!";
-          mine.disableClicks();
-          // mine.reset();
-        }, 1);
-      }
 
 
 
     }
+    let totalFlagged = mine.numFlagged;
+    console.log("Total Flagged", totalFlagged);
+    if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
+      won = true;
+      // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
+      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+      alert("Congratulations! All mines have been identified. Click next to continue.");
+      document.getElementById('status').textContent = "You Won!";
+      // mine.reset();
+      mine.disableClicks();
+    }
+
+
+    else if (mine.lives == 0) {
+      setTimeout(function () {
+        alert("You lost. Click next to continue");
+        document.getElementById('status').textContent = "You Lost!";
+        mine.disableClicks();
+        // mine.reset();
+      }, 1);
+    }
+
     mine.computerTurnRound.forEach(elem => {
 
       if (mine.numFlagged == elem) {
@@ -348,7 +352,6 @@ var mine = {
   },
   markComp: function (row, col) {
     let time = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
-    let myPromise;
     if (mine.bombsFoundByComp == mine.totalBombsToIdentify) {
       return [undefined, undefined];
     }
@@ -389,6 +392,15 @@ var mine = {
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
       mine.disableClicks();
+    }
+
+    else if (mine.lives == 0) {
+      setTimeout(function () {
+        alert("You lost. Click next to continue");
+        document.getElementById('status').textContent = "You Lost!";
+        mine.disableClicks();
+        // mine.reset();
+      }, 1);
     }
 
     return [undefined, undefined];
@@ -477,18 +489,25 @@ var mine = {
         }
       }
 
-      // (D3D) NO CELLS LEFT TO OPEN - WIN!
-      console.log("mine.rCell: ", mine.rCell, "mine.total", mine.total)
       let totalFlagged = mine.numFlagged;
       console.log("Total Flagged", totalFlagged);
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
-        document.getElementById('status').textContent = "You won!";
         won = true;
         // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
         // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
-        alert("YOU WIN!");
-        mine.reset();
-        return;
+        alert("Congratulations! All mines have been identified. Click next to continue.");
+        document.getElementById('status').textContent = "You Won!";
+        // mine.reset();
+        mine.disableClicks();
+      }
+
+      else if (mine.lives == 0) {
+        setTimeout(function () {
+          alert("You lost. Click next to continue");
+          document.getElementById('status').textContent = "You Lost!";
+          mine.disableClicks();
+          // mine.reset();
+        }, 1);
       }
 
 
@@ -512,8 +531,6 @@ var mine = {
       await mine.checkAdjacentForFlags(cells);
     }
 
-    console.log("HELLOOOOO");
-
     // Check if all the mines are correctly identified
     //If not, then open a few cell and run the flag routine again
 
@@ -527,8 +544,8 @@ var mine = {
       await mine.checkAdjacentForFlags(markedCells);
     }
     document.getElementById('status').textContent = "You are playing.";
-
     mine.enableClicks();
+
   },
   generateItem: function (arr) {
 
@@ -849,11 +866,12 @@ var mine = {
         }
       }
       else {
-        console.log("RANDOMMMM");
+        console.log("RANDOM Cell Opening");
 
         let row = Math.floor(Math.random() * (mine.height - 1));
         let col = Math.floor(Math.random() * (mine.width - 1));
-        await mine.openComp(row,col)
+        await mine.sleep(mine.time);
+        await mine.openComp(row, col)
         break;
       }
 
@@ -918,4 +936,4 @@ var mine = {
 };
 
 
-window.addEventListener("DOMContentLoaded", mine.reset([1], 4));
+window.addEventListener("DOMContentLoaded", mine.reset([12], 3));
