@@ -589,7 +589,6 @@ var mine = {
 
       // Look around in adjacent cells for Flags and unopened
       FLAGS = 0;
-      BOMBS = 0;
       UNOPENED = 0;
       let lastRow = ROW - 1,
         nextRow = ROW + 1;
@@ -616,7 +615,7 @@ var mine = {
           if (mine.board[lastRow][lastCol].x) {
             FLAGS++;
           }
-          else if (!mine.board[lastRow][lastCol].r) {
+          if (!mine.board[lastRow][lastCol].r) {
             UNOPENED++;
           }
 
@@ -624,7 +623,7 @@ var mine = {
         if (mine.board[ROW][COL].x) {
           FLAGS++;
         }
-        else if (!mine.board[ROW][COL].r) {
+        if (!mine.board[ROW][COL].r) {
           UNOPENED++;
         }
         if (nextCol != -1) {
@@ -632,7 +631,7 @@ var mine = {
 
             FLAGS++;
           }
-          else if (!mine.board[lastRow][nextCol].r) {
+          if (!mine.board[lastRow][nextCol].r) {
             UNOPENED++;
           }
         }
@@ -647,7 +646,7 @@ var mine = {
         if (mine.board[ROW][lastCol].x) {
           FLAGS++;
         }
-        else if (!mine.board[ROW][lastCol].r) {
+        if (!mine.board[ROW][lastCol].r) {
           UNOPENED++;
         }
       }
@@ -655,7 +654,7 @@ var mine = {
         if (mine.board[ROW][nextCol].x) {
           FLAGS++;
         }
-        else if (!mine.board[ROW][nextCol].r) {
+        if (!mine.board[ROW][nextCol].r) {
           UNOPENED++;
         }
       }
@@ -672,27 +671,28 @@ var mine = {
           if (mine.board[nextRow][lastCol].x) {
             FLAGS++;
           }
-          else if (!mine.board[nextRow][lastCol].r) {
+          if (!mine.board[nextRow][lastCol].r) {
             UNOPENED++;
           }
         }
         if (mine.board[nextRow][COL].x) {
           FLAGS++;
         }
-        else if (!mine.board[nextRow][COL].r) {
+        if (!mine.board[nextRow][COL].r) {
           UNOPENED++;
         }
         if (nextCol != -1) {
           if (mine.board[nextRow][nextCol].x) {
             FLAGS++;
           }
-          else if (!mine.board[nextRow][nextCol].r) {
+          if (!mine.board[nextRow][nextCol].r) {
             UNOPENED++;
           }
         }
       }
       let diff = NUMBER - FLAGS;
       console.log("NUMBER", NUMBER);
+      console.log("Flags in flagging routing", FLAGS);
       console.log("Unopened", UNOPENED);
       console.log("DIFFERENCE (num - flags)", diff);
       // // let ratio = NUMBER / UNOPENED
@@ -700,6 +700,7 @@ var mine = {
       // console.log("AdjacentCells", adjacentCells);
       console.log(i);
       if (diff == UNOPENED) {
+        console.log("placing flag");
         if (mine.bombsFoundByComp != mine.totalBombsToIdentify)
           await mine.placeFlags(adjacentCells);
       }
@@ -708,7 +709,7 @@ var mine = {
 
   },
   placeFlags: async function (adjacentCells) {
-    console.log("Placing Flags with Adjacent Cells", adjacentCells);
+    // console.log("Placing Flags with Adjacent Cells", adjacentCells);
 
     for (let i = 0; i < adjacentCells.length; i++) {
       if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != mine.totalBombsToIdentify)) {
@@ -735,7 +736,7 @@ var mine = {
 
   },
   checkAdjacentForOpening: async function (cells) {
-    console.log("TOTAL CELLS FOR OPENING", cells);
+    // console.log("TOTAL CELLS FOR OPENING", cells);
     let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
     for (let i = 0; i < cells.length; i++) {
       ROW = parseInt(cells[i].dataset.row);
@@ -936,4 +937,4 @@ var mine = {
 };
 
 
-window.addEventListener("DOMContentLoaded", mine.reset([12], 3));
+window.addEventListener("DOMContentLoaded", mine.reset([1], 3));
