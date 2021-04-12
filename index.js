@@ -135,8 +135,8 @@ var mine = {
     document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
     // (C2) MARK/UNMARK ONLY IF CELL IS STILL HIDDEN
 
-    // If user clicked on it before OR it contains mine and marked as well, then dont update numFlagged and don't allow unmarking
-    if (this.classList.contains('boom') || (mine.board[row][col].m && mine.board[row][col].x)) {
+    // If  it contains mine and marked as well, then dont update numFlagged and don't allow unmarking
+    if ((mine.board[row][col].m && mine.board[row][col].x)) {
       document.getElementById('flaggedCells').textContent = mine.numFlagged;
       //Do nothing
 
@@ -230,15 +230,6 @@ var mine = {
       mine.board[row][col].x = !mine.board[row][col].x;
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       document.getElementById('lives').textContent = mine.lives;
-      // // Check if player lost all three lives
-      // if (mine.lives == 0) {
-      //   setTimeout(function () {
-      //     alert("You lost. Click next to continue");
-      //     document.getElementById('status').textContent = "You Lost.";
-      //     mine.disableClicks();
-      //     // mine.reset();
-      //   }, 1);
-      // }
 
     }
     // (D3) REVEAL SELECTED CELL + ALL EMPTY ADJACENT CELLS
@@ -606,10 +597,10 @@ var mine = {
       if (lastRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[lastRow][lastCol])
-          adjacentCells.push(mine.board[ROW][COL])
+          adjacentCells.push(mine.board[lastRow][COL])
           adjacentCells.push(mine.board[lastRow][nextCol])
           // console.log(mine.board[lastRow][lastCol]);
-          // console.log(mine.board[ROW][COL]);
+          // console.log(mine.board[lastRow][COL]);
           // console.log(mine.board[lastRow][nextCol]);
           if (mine.board[lastRow][lastCol].x) {
             FLAGS++;
@@ -619,10 +610,10 @@ var mine = {
           }
 
         }
-        if (mine.board[ROW][COL].x) {
+        if (mine.board[lastRow][COL].x) {
           FLAGS++;
         }
-        if (!mine.board[ROW][COL].r) {
+        if (!mine.board[lastRow][COL].r) {
           UNOPENED++;
         }
         if (nextCol != -1) {
@@ -699,7 +690,7 @@ var mine = {
       // console.log("AdjacentCells", adjacentCells);
       // console.log(i);
       if (diff == UNOPENED) {
-        console.log("placing flag");
+        await console.log("placing flag");
         if (mine.bombsFoundByComp != mine.totalBombsToIdentify)
           await mine.placeFlags(adjacentCells);
       }
@@ -725,9 +716,6 @@ var mine = {
           await mine.sleep(2000);
           jQuery("#myModal").hide()
         }
-
-
-
 
       }
     }
@@ -763,7 +751,7 @@ var mine = {
       if (lastRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[lastRow][lastCol])
-          adjacentCells.push(mine.board[ROW][COL])
+          adjacentCells.push(mine.board[lastRow][COL])
           adjacentCells.push(mine.board[lastRow][nextCol])
           // console.log(mine.board[lastRow][lastCol]);
           // console.log(mine.board[ROW][COL]);
@@ -776,10 +764,10 @@ var mine = {
           }
 
         }
-        if (mine.board[ROW][COL].x) {
+        if (mine.board[lastRow][COL].x) {
           FLAGS++;
         }
-        if (!mine.board[ROW][COL].r) {
+        if (!mine.board[lastRow][COL].r) {
           UNOPENED++;
         }
         if (nextCol != -1) {
@@ -787,7 +775,7 @@ var mine = {
 
             FLAGS++;
           }
-           if (!mine.board[lastRow][nextCol].r) {
+          if (!mine.board[lastRow][nextCol].r) {
             UNOPENED++;
           }
         }
@@ -802,7 +790,7 @@ var mine = {
         if (mine.board[ROW][lastCol].x) {
           FLAGS++;
         }
-        else if (!mine.board[ROW][lastCol].r) {
+        if (!mine.board[ROW][lastCol].r) {
           UNOPENED++;
         }
       }
@@ -810,7 +798,7 @@ var mine = {
         if (mine.board[ROW][nextCol].x) {
           FLAGS++;
         }
-         if (!mine.board[ROW][nextCol].r) {
+        if (!mine.board[ROW][nextCol].r) {
           UNOPENED++;
         }
       }
@@ -827,21 +815,21 @@ var mine = {
           if (mine.board[nextRow][lastCol].x) {
             FLAGS++;
           }
-           if (!mine.board[nextRow][lastCol].r) {
+          if (!mine.board[nextRow][lastCol].r) {
             UNOPENED++;
           }
         }
         if (mine.board[nextRow][COL].x) {
           FLAGS++;
         }
-         if (!mine.board[nextRow][COL].r) {
+        if (!mine.board[nextRow][COL].r) {
           UNOPENED++;
         }
         if (nextCol != -1) {
           if (mine.board[nextRow][nextCol].x) {
             FLAGS++;
           }
-           if (!mine.board[nextRow][nextCol].r) {
+          if (!mine.board[nextRow][nextCol].r) {
             UNOPENED++;
           }
         }
@@ -891,7 +879,7 @@ var mine = {
         if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r) {
 
           await mine.sleep(mine.time);
-          mine.openComp(itemRow, itemColumn);
+          await mine.openComp(itemRow, itemColumn);
           // jQuery("#modal-text").text("A cell has been opened.");
           // jQuery("#myModal").css("display", "block");
           // await mine.sleep(2000);
@@ -915,7 +903,9 @@ var mine = {
     let cells = document.getElementsByClassName('reveal');
     // console.log("revealed cells", cells);
     cells = Array.from(cells).filter((el) => {
-      if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3' || el.textContent == '4' || el.textContent == '5') {
+      if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3'
+        || el.textContent == '4' || el.textContent == '5' ||
+        el.textContent == '6' || el.textContent == '7') {
         return el;
       }
     });
