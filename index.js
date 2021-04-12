@@ -518,11 +518,10 @@ var mine = {
   autoplay: async function () {
     mine.disableClicks();
     mine.computerTurnRound.shift();
-    console.log(mine.computerTurnRound);
 
     let cells = mine.getAllRevealedCells();
 
-    console.log(cells);
+    // console.log(cells);
     mine.displayModal("Now, your helper will play for a few rounds.");
     // Check for adjacent Cells and place Flags routine
     document.getElementById('status').textContent = "You are being helped.";
@@ -539,7 +538,7 @@ var mine = {
       let flaggedCells = mine.getAllMarkedCells();
       await mine.checkAdjacentForOpening(flaggedCells);
       // Run the flag routine again
-      console.log("STARTING FLAG ROUTINE NOW , ", mine.bombsFoundByComp);
+      // console.log("STARTING FLAG ROUTINE NOW , ", mine.bombsFoundByComp);
       let markedCells = mine.getAllRevealedCells();
       await mine.checkAdjacentForFlags(markedCells);
     }
@@ -578,7 +577,7 @@ var mine = {
     return new Promise(resolve => setTimeout(resolve, ms));
   },
   checkAdjacentForFlags: async function (cells) {
-    console.log("TOTAL CELLS FOR FLAGS", cells);
+    // console.log("TOTAL CELLS FOR FLAGS", cells);
     let ROW, COL, NUMBER, adjacentCells, selectedCell, FLAGS, UNOPENED;
     for (let i = 0; i < cells.length; i++) {
       ROW = parseInt(cells[i].dataset.row);
@@ -698,7 +697,7 @@ var mine = {
       // // let ratio = NUMBER / UNOPENED
       // // console.log("Ratio of number to unopened", ratio);
       // console.log("AdjacentCells", adjacentCells);
-      console.log(i);
+      // console.log(i);
       if (diff == UNOPENED) {
         console.log("placing flag");
         if (mine.bombsFoundByComp != mine.totalBombsToIdentify)
@@ -715,7 +714,6 @@ var mine = {
       if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != mine.totalBombsToIdentify)) {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
-        // mine.changesByComp.push(mine.markComp(itemRow, itemColumn));
         const [result, cell] = mine.markComp(itemRow, itemColumn);
         // await mine.sleep(mine.time);
         if (result != undefined && cell != undefined) {
@@ -773,7 +771,7 @@ var mine = {
           if (mine.board[lastRow][lastCol].x) {
             FLAGS++;
           }
-          else if (!mine.board[lastRow][lastCol].r) {
+          if (!mine.board[lastRow][lastCol].r) {
             UNOPENED++;
           }
 
@@ -781,7 +779,7 @@ var mine = {
         if (mine.board[ROW][COL].x) {
           FLAGS++;
         }
-        else if (!mine.board[ROW][COL].r) {
+        if (!mine.board[ROW][COL].r) {
           UNOPENED++;
         }
         if (nextCol != -1) {
@@ -789,7 +787,7 @@ var mine = {
 
             FLAGS++;
           }
-          else if (!mine.board[lastRow][nextCol].r) {
+           if (!mine.board[lastRow][nextCol].r) {
             UNOPENED++;
           }
         }
@@ -812,7 +810,7 @@ var mine = {
         if (mine.board[ROW][nextCol].x) {
           FLAGS++;
         }
-        else if (!mine.board[ROW][nextCol].r) {
+         if (!mine.board[ROW][nextCol].r) {
           UNOPENED++;
         }
       }
@@ -829,21 +827,21 @@ var mine = {
           if (mine.board[nextRow][lastCol].x) {
             FLAGS++;
           }
-          else if (!mine.board[nextRow][lastCol].r) {
+           if (!mine.board[nextRow][lastCol].r) {
             UNOPENED++;
           }
         }
         if (mine.board[nextRow][COL].x) {
           FLAGS++;
         }
-        else if (!mine.board[nextRow][COL].r) {
+         if (!mine.board[nextRow][COL].r) {
           UNOPENED++;
         }
         if (nextCol != -1) {
           if (mine.board[nextRow][nextCol].x) {
             FLAGS++;
           }
-          else if (!mine.board[nextRow][nextCol].r) {
+           if (!mine.board[nextRow][nextCol].r) {
             UNOPENED++;
           }
         }
@@ -856,7 +854,7 @@ var mine = {
       // // let ratio = NUMBER / UNOPENED
       // // console.log("Ratio of number to unopened", ratio);
       // console.log("AdjacentCells", adjacentCells);
-      console.log(i);
+      // console.log(i);
       //equal number of flags or no flags
 
       if (diff == 0 || diff < 0) {
@@ -882,10 +880,10 @@ var mine = {
   },
 
   openCells: async function (adjacentCells) {
-    console.log("Opening Cells with Adjacent Cells", adjacentCells);
+    // console.log("Opening Cells with Adjacent Cells", adjacentCells);
 
     for (let i = 0; i < adjacentCells.length; i++) {
-      console.log("Gello inside openCells");
+      // console.log("Gello inside openCells");
       if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != mine.totalBombsToIdentify)) {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
@@ -915,7 +913,7 @@ var mine = {
 
   getAllRevealedCells: function () {
     let cells = document.getElementsByClassName('reveal');
-    console.log("revealed cells", cells);
+    // console.log("revealed cells", cells);
     cells = Array.from(cells).filter((el) => {
       if (el.textContent == '1' || el.textContent == '2' || el.textContent == '3' || el.textContent == '4' || el.textContent == '5') {
         return el;
