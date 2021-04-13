@@ -849,7 +849,7 @@ var mine = {
         let res = await mine.openCells(adjacentCells);
         console.log(res);
         if (res) {
-          break;
+          return;
         }
       }
       else {
@@ -859,7 +859,7 @@ var mine = {
         let col = Math.floor(Math.random() * (mine.width - 1));
         await mine.sleep(mine.time);
         await mine.openComp(row, col)
-        break;
+        return;
       }
 
       // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
