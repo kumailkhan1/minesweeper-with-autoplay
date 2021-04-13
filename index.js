@@ -526,12 +526,12 @@ var mine = {
 
     while (mine.bombsFoundByComp != mine.totalBombsToIdentify) {
       // All the cells with number
-      let flaggedCells = mine.getAllMarkedCells();
+      let flaggedCells = await mine.getAllMarkedCells();
       await mine.checkAdjacentForOpening(flaggedCells);
       // Run the flag routine again
       // console.log("STARTING FLAG ROUTINE NOW , ", mine.bombsFoundByComp);
       console.log("BACK IN AUTOPLAYYYYYYYYYYYYYY");
-      let markedCells = mine.getAllRevealedCells();
+      let markedCells = await mine.getAllRevealedCells();
       await mine.checkAdjacentForFlags(markedCells);
     }
     document.getElementById('status').textContent = "You are playing.";
