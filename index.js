@@ -571,12 +571,13 @@ var mine = {
   },
   checkAdjacentForFlags: async function (cells) {
     // console.log("TOTAL CELLS FOR FLAGS", cells);
-    
+
     for (let i = 0; i < cells.length; i++) {
       let ROW, COL, NUMBER, adjacentCells, FLAGS, UNOPENED;
       ROW = parseInt(cells[i].dataset.row);
       COL = parseInt(cells[i].dataset.col);
       NUMBER = parseInt(mine.board[ROW][COL].a);
+      let selectedCell = mine.board(mine.board[ROW][COL])
       adjacentCells = [];
       // Look around in adjacent cells for Flags and unopened
       FLAGS = 0;
@@ -692,10 +693,12 @@ var mine = {
       // console.log(i);
       if (diff == UNOPENED) {
         await console.log("Placing Flag");
-        if (mine.bombsFoundByComp != mine.totalBombsToIdentify)
+        if (mine.bombsFoundByComp != mine.totalBombsToIdentify) {
+          await console.log(selectedCell);
           await mine.placeFlags(adjacentCells);
+        }
+        // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
       }
-      // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
     };
 
   },
@@ -724,7 +727,7 @@ var mine = {
   },
   checkAdjacentForOpening: async function (cells) {
     // console.log("TOTAL CELLS FOR OPENING", cells);
-    
+
     for (let i = 0; i < cells.length; i++) {
       let ROW, COL, NUMBER, adjacentCells, FLAGS, UNOPENED;
       ROW = parseInt(cells[i].dataset.row);
@@ -735,7 +738,7 @@ var mine = {
       FLAGS = 0;
       UNOPENED = 0;
       // Look around in adjacent cells for Flags and unopened
-     
+
       let lastRow = ROW - 1,
         nextRow = ROW + 1;
       if (nextRow == mine.height) { nextRow = -1; }
@@ -870,7 +873,7 @@ var mine = {
       }
 
     }
-    
+
 
   },
 
