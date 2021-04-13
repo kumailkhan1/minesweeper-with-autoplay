@@ -864,11 +864,12 @@ var mine = {
       if (!mine.board[row][col].m && !mine.board[row][col].r) {
         random = false;
         await mine.openComp(row, col)
-        break;
+        return;
+
       }
 
     }
-    return;
+    
 
   },
 
