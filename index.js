@@ -577,7 +577,7 @@ var mine = {
       ROW = parseInt(cells[i].dataset.row);
       COL = parseInt(cells[i].dataset.col);
       NUMBER = parseInt(mine.board[ROW][COL].a);
-      let selectedCell = mine.board[ROW][COL]
+      let selectedCell = mine.board[ROW][COL];
       adjacentCells = [];
       // Look around in adjacent cells for Flags and unopened
       FLAGS = 0;
@@ -594,19 +594,13 @@ var mine = {
       if (nextCol == mine.width) { nextCol = -1; }
 
       // CALCULATE ONLY IF CELL DOES NOT CONTAIN MINE
-      adjacentCells.push(mine.board[lastRow][lastCol])
-      adjacentCells.push(mine.board[lastRow][COL])
-      adjacentCells.push(mine.board[lastRow][nextCol])
-      adjacentCells.push(mine.board[ROW][lastCol])
-      adjacentCells.push(mine.board[ROW][nextCol])
-      adjacentCells.push(mine.board[nextRow][lastCol])
-      adjacentCells.push(mine.board[nextRow][COL])
-      adjacentCells.push(mine.board[nextRow][nextCol])
+
       // COUNTING FLAGS IN LAST ROW
       if (lastRow != -1) {
-
         if (lastCol != -1) {
-
+          adjacentCells.push(mine.board[lastRow][lastCol])
+          adjacentCells.push(mine.board[lastRow][COL])
+          adjacentCells.push(mine.board[lastRow][nextCol])
           // console.log(mine.board[lastRow][lastCol]);
           // console.log(mine.board[lastRow][COL]);
           // console.log(mine.board[lastRow][nextCol]);
@@ -637,7 +631,7 @@ var mine = {
 
       // CURRENT ROW
       if (lastCol != -1) {
-
+        adjacentCells.push(mine.board[ROW][lastCol])
 
         // console.log(mine.board[ROW][lastCol]);
         // console.log(mine.board[ROW][nextCol]);
@@ -649,7 +643,7 @@ var mine = {
         }
       }
       if (nextCol != -1) {
-
+        adjacentCells.push(mine.board[ROW][nextCol])
         if (mine.board[ROW][nextCol].x) {
           FLAGS++;
         }
@@ -660,13 +654,13 @@ var mine = {
 
       // ADD NUMBER OF MINES IN NEXT ROW
       if (nextRow != -1) {
-
-        // console.log(mine.board[nextRow][lastCol]);
-        // console.log(mine.board[nextRow][COL]);
-        // console.log(mine.board[nextRow][nextCol]);
         if (lastCol != -1) {
-
-
+          adjacentCells.push(mine.board[nextRow][lastCol]);
+          adjacentCells.push(mine.board[nextRow][COL]);
+          adjacentCells.push(mine.board[nextRow][nextCol]);
+          // console.log(mine.board[nextRow][lastCol]);
+          // console.log(mine.board[nextRow][COL]);
+          // console.log(mine.board[nextRow][nextCol]);
           if (mine.board[nextRow][lastCol].x) {
             FLAGS++;
           }
@@ -758,18 +752,13 @@ var mine = {
       if (nextCol == mine.width) { nextCol = -1; }
 
       // CALCULATE ONLY IF CELL DOES NOT CONTAIN MINE
-      adjacentCells.push(mine.board[lastRow][lastCol])
-      adjacentCells.push(mine.board[lastRow][COL])
-      adjacentCells.push(mine.board[lastRow][nextCol])
-      adjacentCells.push(mine.board[ROW][lastCol])
-      adjacentCells.push(mine.board[ROW][nextCol])
-      adjacentCells.push(mine.board[nextRow][lastCol])
-      adjacentCells.push(mine.board[nextRow][COL])
-      adjacentCells.push(mine.board[nextRow][nextCol])
+
       // COUNTING FLAGS IN LAST ROW
       if (lastRow != -1) {
         if (lastCol != -1) {
-
+          adjacentCells.push(mine.board[lastRow][lastCol])
+          adjacentCells.push(mine.board[lastRow][COL])
+          adjacentCells.push(mine.board[lastRow][nextCol])
           // console.log(mine.board[lastRow][lastCol]);
           // console.log(mine.board[ROW][COL]);
           // console.log(mine.board[lastRow][nextCol]);
@@ -800,8 +789,8 @@ var mine = {
 
       // CURRENT ROW
       if (lastCol != -1) {
-
-
+        adjacentCells.push(mine.board[ROW][lastCol])
+       
         // console.log(mine.board[ROW][lastCol]);
         // console.log(mine.board[ROW][nextCol]);
         if (mine.board[ROW][lastCol].x) {
@@ -812,7 +801,7 @@ var mine = {
         }
       }
       if (nextCol != -1) {
-
+        adjacentCells.push(mine.board[ROW][nextCol])
         if (mine.board[ROW][nextCol].x) {
           FLAGS++;
         }
@@ -824,7 +813,9 @@ var mine = {
       // ADD NUMBER OF MINES IN NEXT ROW
       if (nextRow != -1) {
         if (lastCol != -1) {
-
+          adjacentCells.push(mine.board[nextRow][lastCol])
+          adjacentCells.push(mine.board[nextRow][COL])
+          adjacentCells.push(mine.board[nextRow][nextCol])
           // console.log(mine.board[nextRow][lastCol]);
           // console.log(mine.board[nextRow][COL]);
           // console.log(mine.board[nextRow][nextCol]);
