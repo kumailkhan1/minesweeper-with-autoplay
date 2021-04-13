@@ -692,7 +692,7 @@ var mine = {
       // // console.log("Ratio of number to unopened", ratio);
       // console.log("AdjacentCells", adjacentCells);
       // console.log(i);
-      if (diff == UNOPENED || UNOPENED < NUMBER) {
+      if (diff == UNOPENED) {
         await console.log("Placing Flag");
         if (mine.bombsFoundByComp != mine.totalBombsToIdentify) {
           await console.log(selectedCell);
