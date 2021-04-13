@@ -150,6 +150,7 @@ var mine = {
         if (mine.board[row][col].m) {
           this.classList.toggle("mark");
           mine.board[row][col].x = !mine.board[row][col].x;
+          mine.board[row][col].r = !mine.board[row][col].r;
           mine.numFlagged++;
           document.getElementById('flaggedCells').textContent = mine.numFlagged;
         }
@@ -219,7 +220,7 @@ var mine = {
     }
 
 
-    else if (!mine.board[row][col].x && mine.board[row][col].m) {
+    if (!mine.board[row][col].x && mine.board[row][col].m) {
       mine.ongoingRound++;
 
       this.classList.add("boom");
@@ -228,6 +229,8 @@ var mine = {
       document.getElementById('flaggedCells').textContent = mine.numFlagged;
       mine.lives--;
       mine.board[row][col].x = !mine.board[row][col].x;
+      mine.board[row][col].r = !mine.board[row][col].r;
+      console.log("Opened mine",  mine.board[row][col]);
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       document.getElementById('lives').textContent = mine.lives;
 
@@ -368,6 +371,7 @@ var mine = {
           // mine.changesByComp.push(cell);
           // cell.classList.toggle("mark");
           mine.board[row][col].x = !mine.board[row][col].x;
+          mine.board[row][col].r = !mine.board[row][col].r;
           let result = mine.bombsFoundByComp;
           return [result, cell];
         }
@@ -411,6 +415,7 @@ var mine = {
     }
     // (D3) REVEAL SELECTED CELL + ALL EMPTY ADJACENT CELLS
     else {
+      
       mine.toReveal = [], // ALL CELLS TO REVEAL
         mine.toCheck = [], // ALL CELLS TO CHECK
         mine.checked = [];
@@ -599,8 +604,8 @@ var mine = {
       if (lastRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[lastRow][lastCol])
-          adjacentCells.push(mine.board[lastRow][COL])
-          adjacentCells.push(mine.board[lastRow][nextCol])
+         
+          
           // console.log(mine.board[lastRow][lastCol]);
           // console.log(mine.board[lastRow][COL]);
           // console.log(mine.board[lastRow][nextCol]);
@@ -612,6 +617,8 @@ var mine = {
           }
 
         }
+        adjacentCells.push(mine.board[lastRow][COL])
+        
         if (mine.board[lastRow][COL].x) {
           FLAGS++;
         }
@@ -619,6 +626,7 @@ var mine = {
           UNOPENED++;
         }
         if (nextCol != -1) {
+          adjacentCells.push(mine.board[lastRow][nextCol])
           if (mine.board[lastRow][nextCol].x) {
 
             FLAGS++;
@@ -656,8 +664,8 @@ var mine = {
       if (nextRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[nextRow][lastCol]);
-          adjacentCells.push(mine.board[nextRow][COL]);
-          adjacentCells.push(mine.board[nextRow][nextCol]);
+          
+         
           // console.log(mine.board[nextRow][lastCol]);
           // console.log(mine.board[nextRow][COL]);
           // console.log(mine.board[nextRow][nextCol]);
@@ -668,6 +676,7 @@ var mine = {
             UNOPENED++;
           }
         }
+        adjacentCells.push(mine.board[nextRow][COL]);
         if (mine.board[nextRow][COL].x) {
           FLAGS++;
         }
@@ -675,6 +684,7 @@ var mine = {
           UNOPENED++;
         }
         if (nextCol != -1) {
+          adjacentCells.push(mine.board[nextRow][nextCol]);
           if (mine.board[nextRow][nextCol].x) {
             FLAGS++;
           }
@@ -757,8 +767,7 @@ var mine = {
       if (lastRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[lastRow][lastCol])
-          adjacentCells.push(mine.board[lastRow][COL])
-          adjacentCells.push(mine.board[lastRow][nextCol])
+
           // console.log(mine.board[lastRow][lastCol]);
           // console.log(mine.board[ROW][COL]);
           // console.log(mine.board[lastRow][nextCol]);
@@ -770,6 +779,7 @@ var mine = {
           }
 
         }
+        adjacentCells.push(mine.board[lastRow][COL])
         if (mine.board[lastRow][COL].x) {
           FLAGS++;
         }
@@ -777,6 +787,7 @@ var mine = {
           UNOPENED++;
         }
         if (nextCol != -1) {
+          adjacentCells.push(mine.board[lastRow][nextCol])
           if (mine.board[lastRow][nextCol].x) {
 
             FLAGS++;
@@ -814,8 +825,7 @@ var mine = {
       if (nextRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[nextRow][lastCol])
-          adjacentCells.push(mine.board[nextRow][COL])
-          adjacentCells.push(mine.board[nextRow][nextCol])
+
           // console.log(mine.board[nextRow][lastCol]);
           // console.log(mine.board[nextRow][COL]);
           // console.log(mine.board[nextRow][nextCol]);
@@ -826,6 +836,7 @@ var mine = {
             UNOPENED++;
           }
         }
+        adjacentCells.push(mine.board[nextRow][COL])
         if (mine.board[nextRow][COL].x) {
           FLAGS++;
         }
@@ -833,6 +844,7 @@ var mine = {
           UNOPENED++;
         }
         if (nextCol != -1) {
+          adjacentCells.push(mine.board[nextRow][nextCol])
           if (mine.board[nextRow][nextCol].x) {
             FLAGS++;
           }
@@ -867,7 +879,7 @@ var mine = {
       let row = Math.floor(Math.random() * (mine.height - 1));
       let col = Math.floor(Math.random() * (mine.width - 1));
       await mine.sleep(mine.time);
-      if (!mine.board[row][col].m && !mine.board[row][col].r) {
+      if (!mine.board[row][col].m && !mine.board[row][col].r && !mine.board[row][col].x) {
         random = false;
         await mine.openComp(row, col)
         return;
@@ -888,7 +900,7 @@ var mine = {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
 
-        if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r) {
+        if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r && !mine.board[itemRow][itemColumn].x) {
 
           await mine.sleep(mine.time);
           await mine.openComp(itemRow, itemColumn);
