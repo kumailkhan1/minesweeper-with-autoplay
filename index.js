@@ -700,7 +700,7 @@ var mine = {
   },
   placeFlags: async function (adjacentCells) {
     // console.log("Placing Flags with Adjacent Cells", adjacentCells);
-
+    console.log("Adjacent Cells", adjacentCells);
     for (let i = 0; i < adjacentCells.length; i++) {
       if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != mine.totalBombsToIdentify)) {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
