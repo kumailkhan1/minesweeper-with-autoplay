@@ -510,7 +510,7 @@ var mine = {
     mine.disableClicks();
     mine.computerTurnRound.shift();
 
-    let cells = mine.getAllRevealedCells();
+    let cells = await mine.getAllRevealedCells();
 
     // console.log(cells);
     mine.displayModal("Now, your helper will play for a few rounds.");
@@ -585,8 +585,6 @@ var mine = {
       let lastRow = ROW - 1,
         nextRow = ROW + 1;
       if (nextRow == mine.height) { nextRow = -1; }
-
-
       // LOOP THROUGH CELLS OF EACH ROW
 
       let lastCol = COL - 1,
@@ -707,7 +705,7 @@ var mine = {
       if (adjacentCells[i] != undefined && (mine.bombsFoundByComp != mine.totalBombsToIdentify)) {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
-        const [result, cell] = mine.markComp(itemRow, itemColumn);
+        const [result, cell] = await mine.markComp(itemRow, itemColumn);
         // await mine.sleep(mine.time);
         if (result != undefined && cell != undefined) {
           await mine.sleep(mine.time);
@@ -887,10 +885,6 @@ var mine = {
 
           await mine.sleep(mine.time);
           await mine.openComp(itemRow, itemColumn);
-          // jQuery("#modal-text").text("A cell has been opened.");
-          // jQuery("#myModal").css("display", "block");
-          // await mine.sleep(2000);
-          // jQuery("#myModal").hide()
           return true;
         }
 
