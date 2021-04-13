@@ -2,6 +2,7 @@ var won = false;
 var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
+  computerMoves: 0,
   result: [],
   time: 3000, // TIME between opening of cells OR placing of flags
   total: 15, // TOTAL NUMBER OF MINES
@@ -175,9 +176,11 @@ var mine = {
     let totalFlagged = mine.numFlagged;
     // console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
+      console.log(mine.computerMoves);
       won = true;
       // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
       // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -319,8 +322,10 @@ var mine = {
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
+      console.log(mine.computerMoves);
       // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
       // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -381,8 +386,10 @@ var mine = {
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
+      console.log(mine.computerMoves);
       // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
       // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -403,7 +410,7 @@ var mine = {
   },
   // (D) LEFT CLICK TO OPEN CELL
   openComp: function (row, col) {
-
+    mine.computerMoves++;
     // (D1) GET COORDS OF SELECTED CELL
     let cell = document.getElementById('mine-' + row + '-' + col);
     // (D2) SELECTED CELL HAS MINE = LOSE
@@ -489,8 +496,10 @@ var mine = {
       console.log("Total Flagged", totalFlagged);
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         won = true;
+        console.log(mine.computerMoves);
         // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
         // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
+        // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
         alert("Congratulations! All mines have been identified. Click next to continue.");
         document.getElementById('status').textContent = "You Won!";
         // mine.reset();
