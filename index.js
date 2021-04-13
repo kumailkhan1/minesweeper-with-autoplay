@@ -532,6 +532,7 @@ var mine = {
       // console.log("STARTING FLAG ROUTINE NOW , ", mine.bombsFoundByComp);
       console.log("BACK IN AUTOPLAYYYYYYYYYYYYYY");
       let markedCells = await mine.getAllRevealedCells();
+      console.log(markedCells);
       await mine.checkAdjacentForFlags(markedCells);
     }
     document.getElementById('status').textContent = "You are playing.";
