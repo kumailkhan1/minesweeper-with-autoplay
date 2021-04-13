@@ -172,7 +172,7 @@ var mine = {
       // }
     }
     let totalFlagged = mine.numFlagged;
-    console.log("Total Flagged", totalFlagged);
+    // console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
       // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
@@ -530,6 +530,7 @@ var mine = {
       await mine.checkAdjacentForOpening(flaggedCells);
       // Run the flag routine again
       // console.log("STARTING FLAG ROUTINE NOW , ", mine.bombsFoundByComp);
+      console.log("BACK IN AUTOPLAYYYYYYYYYYYYYY");
       let markedCells = mine.getAllRevealedCells();
       await mine.checkAdjacentForFlags(markedCells);
     }
@@ -681,16 +682,16 @@ var mine = {
         }
       }
       let diff = NUMBER - FLAGS;
-      console.log("NUMBER", NUMBER);
-      console.log("Flags in flagging routing", FLAGS);
-      console.log("Unopened", UNOPENED);
-      console.log("DIFFERENCE (num - flags)", diff);
+      // console.log("NUMBER", NUMBER);
+      // console.log("Flags in flagging routing", FLAGS);
+      // console.log("Unopened", UNOPENED);
+      // console.log("DIFFERENCE (num - flags)", diff);
       // // let ratio = NUMBER / UNOPENED
       // // console.log("Ratio of number to unopened", ratio);
       // console.log("AdjacentCells", adjacentCells);
       // console.log(i);
       if (diff == UNOPENED) {
-        await console.log("placing flag");
+        await console.log("Placing Flag");
         if (mine.bombsFoundByComp != mine.totalBombsToIdentify)
           await mine.placeFlags(adjacentCells);
       }
@@ -835,10 +836,10 @@ var mine = {
         }
       }
       let diff = NUMBER - FLAGS;
-      console.log("NUMBER", NUMBER);
-      console.log("Unopened", UNOPENED);
-      console.log("Flags", FLAGS);
-      console.log("DIFFERENCE (num - flags)", diff);
+      // console.log("NUMBER" NUMBER);
+      // console.log("Unopened", UNOPENED);
+      // console.log("Flags", FLAGS);
+      // console.log("DIFFERENCE (num - flags)", diff);,
       // // let ratio = NUMBER / UNOPENED
       // // console.log("Ratio of number to unopened", ratio);
       // console.log("AdjacentCells", adjacentCells);
@@ -847,23 +848,27 @@ var mine = {
 
       if (diff == 0 || diff < 0) {
         let res = await mine.openCells(adjacentCells);
-        console.log(res);
+        console.log("Opening Cell", res);
         if (res) {
           return;
         }
       }
-      else {
-        console.log("RANDOM Cell Opening");
+    };
 
-        let row = Math.floor(Math.random() * (mine.height - 1));
-        let col = Math.floor(Math.random() * (mine.width - 1));
-        await mine.sleep(mine.time);
+    console.log("Opening Random Cell");
+    let random = true;
+    while (random) {
+      let row = Math.floor(Math.random() * (mine.height - 1));
+      let col = Math.floor(Math.random() * (mine.width - 1));
+      await mine.sleep(mine.time);
+      if (!mine.board[row][col].m && !mine.board[row][col].r) {
+        random = false;
         await mine.openComp(row, col)
-        return;
+        break;
       }
 
-      // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
-    };
+    }
+    return;
 
   },
 
