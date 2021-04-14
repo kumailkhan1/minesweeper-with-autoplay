@@ -719,7 +719,7 @@ var mine = {
           await console.log(selectedCell);
           await mine.placeFlags(adjacentCells);
         }
-        else{
+        else {
           return;
         }
         // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
@@ -753,12 +753,50 @@ var mine = {
   checkAdjacentForOpening: async function (cells) {
     // console.log("TOTAL CELLS FOR OPENING", cells);
     if (mine.maxComputerMoves == 0) {
-      // Flag any random mine
+      // Flag any adjacent mine
+      // Get all the revealed cells
+      let revealedCells = await mine.getAllMarkedCells();
+      for (let i = 0; i < revealedCells.length; i++) {
+        let singleCell = revealedCells[i];
+        let adjacent = await mine.getAdjacentCells(singleCell);
+        if (adjacent.length != 0) {
+          for (let j = 0; j < adjacent.length; j++) {
+            // check if flag limit has been reached or not
+            if (adjacent[j] != undefined) {
+              if (mine.bombsFoundByComp != mine.totalBombsToIdentify) {
+                let itemRow = parseInt(adjacent[j].c.dataset.row),
+                  itemColumn = parseInt(adjacent[j].c.dataset.col);
+                // mark the mine if its not already revealed or marked
+                if (mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].x && !mine.board[itemRow][itemColumn].r) {
+                  const [result, cell] = await mine.markComp(itemRow, itemColumn);
+                  if (result != undefined && cell != undefined) {
+                    await mine.sleep(mine.time);
+                    document.getElementById('flaggedCells').textContent = mine.numFlagged;
+                    cell.classList.toggle("mark");
+                    jQuery("#modal-text").text(mine.bombsFoundByComp + " flag(s) found");
+                    jQuery("#myModal").css("display", "block");
+                    await mine.sleep(2000);
+                    jQuery("#myModal").hide()
+                    return;
+                  }
+                }
+
+              }
+              else {
+                return;
+              }
+
+            }
+          }
+        }
+      }
+
+      // If no adjacent cells are found with mines, then flag random mine
       for (let row = 0; row < mine.height; row++) {
         for (let col = 0; col < mine.width; col++) {
-          if(mine.board[row][col].m && !mine.board[row][col].x && !mine.board[row][col].r) {
-            if (mine.bombsFoundByComp != mine.totalBombsToIdentify){
-              const [result,cell] = await mine.markComp(row,col);
+          if (mine.board[row][col].m && !mine.board[row][col].x && !mine.board[row][col].r) {
+            if (mine.bombsFoundByComp != mine.totalBombsToIdentify) {
+              const [result, cell] = await mine.markComp(row, col);
               if (result != undefined && cell != undefined) {
                 await mine.sleep(mine.time);
                 document.getElementById('flaggedCells').textContent = mine.numFlagged;
@@ -767,13 +805,14 @@ var mine = {
                 jQuery("#myModal").css("display", "block");
                 await mine.sleep(2000);
                 jQuery("#myModal").hide()
+                return;
               }
             }
           }
 
         }
       }
-      return;
+
     }
     for (let i = 0; i < cells.length; i++) {
       let ROW, COL, NUMBER, adjacentCells, FLAGS, UNOPENED;
@@ -980,6 +1019,70 @@ var mine = {
     return cells;
   },
 
+
+  getAdjacentCells: function (cell) {
+
+    let ROW, COL, NUMBER, adjacentCells;
+    ROW = parseInt(cell.dataset.row);
+    COL = parseInt(cell.dataset.col);
+    NUMBER = parseInt(mine.board[ROW][COL].a);
+    adjacentCells = [];
+
+    // Look around in adjacent cells for Flags and unopened
+
+    let lastRow = ROW - 1,
+      nextRow = ROW + 1;
+    if (nextRow == mine.height) { nextRow = -1; }
+
+
+    // LOOP THROUGH CELLS OF EACH ROW
+
+    let lastCol = COL - 1,
+      nextCol = COL + 1;
+    if (nextCol == mine.width) { nextCol = -1; }
+
+    // CALCULATE ONLY IF CELL DOES NOT CONTAIN MINE
+
+    // COUNTING FLAGS IN LAST ROW
+    if (lastRow != -1) {
+      if (lastCol != -1) {
+        adjacentCells.push(mine.board[lastRow][lastCol])
+
+
+      }
+      adjacentCells.push(mine.board[lastRow][COL])
+
+      if (nextCol != -1) {
+        adjacentCells.push(mine.board[lastRow][nextCol])
+
+      }
+    }
+
+    // CURRENT ROW
+    if (lastCol != -1) {
+      adjacentCells.push(mine.board[ROW][lastCol])
+
+    }
+    if (nextCol != -1) {
+      adjacentCells.push(mine.board[ROW][nextCol])
+    }
+
+    // ADD NUMBER OF MINES IN NEXT ROW
+    if (nextRow != -1) {
+      if (lastCol != -1) {
+        adjacentCells.push(mine.board[nextRow][lastCol])
+
+      }
+      adjacentCells.push(mine.board[nextRow][COL])
+
+      if (nextCol != -1) {
+        adjacentCells.push(mine.board[nextRow][nextCol])
+      }
+    }
+
+
+    return adjacentCells;
+  }
 };
 
 
