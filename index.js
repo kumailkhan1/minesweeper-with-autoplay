@@ -2,7 +2,8 @@ var won = false;
 var mine = {
   // (A) PROPERTIES
   // (A1) GAME SETTINGS
-  computerMoves: 0,
+  totalComputerMoves: 0,
+  maxComputerMoves: 5,
   result: [],
   time: 3000, // TIME between opening of cells OR placing of flags
   total: 15, // TOTAL NUMBER OF MINES
@@ -176,11 +177,11 @@ var mine = {
     let totalFlagged = mine.numFlagged;
     // console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
-      console.log(mine.computerMoves);
+      console.log(mine.totalComputerMoves);
       won = true;
       // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
       // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
-      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
+      // Qualtrics.SurveyEngine.setEmbeddedData('computerMoves', mine.totalComputerMoves);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -233,7 +234,7 @@ var mine = {
       mine.lives--;
       mine.board[row][col].x = !mine.board[row][col].x;
       mine.board[row][col].r = !mine.board[row][col].r;
-      console.log("Opened mine",  mine.board[row][col]);
+      console.log("Opened mine", mine.board[row][col]);
       document.getElementById('ongoingTurn').textContent = mine.ongoingRound;
       document.getElementById('lives').textContent = mine.lives;
 
@@ -322,10 +323,10 @@ var mine = {
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
-      console.log(mine.computerMoves);
+      console.log(mine.totalComputerMoves);
       // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
       // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
-      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
+      // Qualtrics.SurveyEngine.setEmbeddedData('computerMoves', mine.totalComputerMoves);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -386,10 +387,10 @@ var mine = {
     console.log("Total Flagged", totalFlagged);
     if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
       won = true;
-      console.log(mine.computerMoves);
+      console.log(mine.totalComputerMoves);
       // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
       // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
-      // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
+      // Qualtrics.SurveyEngine.setEmbeddedData('computerMoves', mine.totalComputerMoves);
       alert("Congratulations! All mines have been identified. Click next to continue.");
       document.getElementById('status').textContent = "You Won!";
       // mine.reset();
@@ -410,7 +411,7 @@ var mine = {
   },
   // (D) LEFT CLICK TO OPEN CELL
   openComp: function (row, col) {
-    mine.computerMoves++;
+
     // (D1) GET COORDS OF SELECTED CELL
     let cell = document.getElementById('mine-' + row + '-' + col);
     // (D2) SELECTED CELL HAS MINE = LOSE
@@ -422,7 +423,8 @@ var mine = {
     }
     // (D3) REVEAL SELECTED CELL + ALL EMPTY ADJACENT CELLS
     else {
-      
+      mine.totalComputerMoves++;
+      mine.maxComputerMoves--;
       mine.toReveal = [], // ALL CELLS TO REVEAL
         mine.toCheck = [], // ALL CELLS TO CHECK
         mine.checked = [];
@@ -496,10 +498,10 @@ var mine = {
       console.log("Total Flagged", totalFlagged);
       if ((mine.rCell == mine.total) && (totalFlagged == mine.total)) {
         won = true;
-        console.log(mine.computerMoves);
+        console.log(mine.totalComputerMoves);
         // Qualtrics.SurveyEngine.setEmbeddedData('won', won);
         // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.lives);
-        // Qualtrics.SurveyEngine.setEmbeddedData('lives', mine.computerMoves);
+        // Qualtrics.SurveyEngine.setEmbeddedData('computerMoves', mine.totalComputerMoves);
         alert("Congratulations! All mines have been identified. Click next to continue.");
         document.getElementById('status').textContent = "You Won!";
         // mine.reset();
@@ -613,8 +615,8 @@ var mine = {
       if (lastRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[lastRow][lastCol])
-         
-          
+
+
           // console.log(mine.board[lastRow][lastCol]);
           // console.log(mine.board[lastRow][COL]);
           // console.log(mine.board[lastRow][nextCol]);
@@ -627,7 +629,7 @@ var mine = {
 
         }
         adjacentCells.push(mine.board[lastRow][COL])
-        
+
         if (mine.board[lastRow][COL].x) {
           FLAGS++;
         }
@@ -673,8 +675,8 @@ var mine = {
       if (nextRow != -1) {
         if (lastCol != -1) {
           adjacentCells.push(mine.board[nextRow][lastCol]);
-          
-         
+
+
           // console.log(mine.board[nextRow][lastCol]);
           // console.log(mine.board[nextRow][COL]);
           // console.log(mine.board[nextRow][nextCol]);
@@ -717,6 +719,9 @@ var mine = {
           await console.log(selectedCell);
           await mine.placeFlags(adjacentCells);
         }
+        else{
+          return;
+        }
         // console.log(selectedCell, "Unopened ", UNOPENED, "FLAGS ", FLAGS);
       }
     };
@@ -747,7 +752,29 @@ var mine = {
   },
   checkAdjacentForOpening: async function (cells) {
     // console.log("TOTAL CELLS FOR OPENING", cells);
+    if (mine.maxComputerMoves == 0) {
+      // Flag any random mine
+      for (let row = 0; row < mine.height; row++) {
+        for (let col = 0; col < mine.width; col++) {
+          if(mine.board[row][col].m && !mine.board[row][col].x && !mine.board[row][col].r) {
+            if (mine.bombsFoundByComp != mine.totalBombsToIdentify){
+              const [result,cell] = await mine.markComp(row,col);
+              if (result != undefined && cell != undefined) {
+                await mine.sleep(mine.time);
+                document.getElementById('flaggedCells').textContent = mine.numFlagged;
+                cell.classList.toggle("mark");
+                jQuery("#modal-text").text(mine.bombsFoundByComp + " flag(s) found");
+                jQuery("#myModal").css("display", "block");
+                await mine.sleep(2000);
+                jQuery("#myModal").hide()
+              }
+            }
+          }
 
+        }
+      }
+      return;
+    }
     for (let i = 0; i < cells.length; i++) {
       let ROW, COL, NUMBER, adjacentCells, FLAGS, UNOPENED;
       ROW = parseInt(cells[i].dataset.row);
@@ -810,7 +837,7 @@ var mine = {
       // CURRENT ROW
       if (lastCol != -1) {
         adjacentCells.push(mine.board[ROW][lastCol])
-       
+
         // console.log(mine.board[ROW][lastCol]);
         // console.log(mine.board[ROW][nextCol]);
         if (mine.board[ROW][lastCol].x) {
@@ -898,6 +925,7 @@ var mine = {
     }
 
 
+
   },
 
   openCells: async function (adjacentCells) {
@@ -909,7 +937,8 @@ var mine = {
         let itemRow = parseInt(adjacentCells[i].c.dataset.row),
           itemColumn = parseInt(adjacentCells[i].c.dataset.col);
 
-        if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r && !mine.board[itemRow][itemColumn].x) {
+        if (!mine.board[itemRow][itemColumn].m && !mine.board[itemRow][itemColumn].r &&
+          !mine.board[itemRow][itemColumn].x) {
 
           await mine.sleep(mine.time);
           await mine.openComp(itemRow, itemColumn);
