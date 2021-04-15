@@ -755,7 +755,7 @@ var mine = {
     if (mine.maxComputerMoves == 0) {
       // Flag any adjacent mine
       // Get all the revealed cells
-      let revealedCells = await mine.getAllMarkedCells();
+      let revealedCells = await mine.getAllRevealedCells();
       for (let i = 0; i < revealedCells.length; i++) {
         let singleCell = revealedCells[i];
         let adjacent = await mine.getAdjacentCells(singleCell);
